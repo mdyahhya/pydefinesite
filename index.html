@@ -131,6 +131,9 @@
             .dev-img { margin: 0 auto; }
             .nav { display: none; }
             .hero-title { font-size: 52px; }
+            .hero-card { padding: 16px; }
+            .compiler-editor { padding: 12px; font-size: 11px; }
+            .err-popup { padding: 8px; }
         }
     </style>
 </head>
@@ -155,7 +158,10 @@
         <section class="section" id="home">
             <div class="container grid-2">
                 <div class="hero-copy">
-                    <div class="eyebrow"><span class="dot"></span> pip install pydefine</div>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <div class="eyebrow"><span class="dot"></span> pip install pydefine</div>
+                        <div class="eyebrow" style="color:var(--python-yellow-dark); border-color:rgba(216, 170, 24, 0.2);"><span class="dot" style="background:var(--python-yellow);"></span> 1,400+ Downloads</div>
+                    </div>
                     <h1 class="hero-title">
                         <span class="line">Understand</span>
                         <span class="blue">Python Errors</span>
@@ -218,6 +224,37 @@
             </div>
         </section>
 
+        <section class="section" id="install">
+            <div class="container">
+                <div class="stats-card">
+                    <h2 style="font-size:32px; font-weight:800; letter-spacing:-0.03em; margin-bottom:16px;">Fast Installation</h2>
+                    <p style="color:var(--muted); margin-bottom:24px;">Get started in seconds by installing the package via the official Python Package Index (PyPI).</p>
+                    <div style="background:#0f172a; color:#f8fafc; padding:20px; border-radius:12px; font-family:'JetBrains Mono',monospace; font-size:16px; border:1px solid #1e293b; margin-bottom:24px;">
+                        <span style="color:#60a5fa;">pip</span> install pydefine
+                    </div>
+                    <div class="btn-row" style="margin-top:0;">
+                        <a href="https://pypi.org/project/pydefine/" class="btn btn-primary" target="_blank">Official PyPI Page</a>
+                        <a href="https://github.com/mdyahhya/pydefine" class="btn btn-secondary" target="_blank">GitHub Source</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="usage" style="padding-top:0;">
+            <div class="container">
+                <div class="stats-card" style="border-top:1px solid var(--line);">
+                    <h2 style="font-size:32px; font-weight:800; letter-spacing:-0.03em; margin-bottom:16px;">How to Use</h2>
+                    <p style="color:var(--muted); margin-bottom:24px;">It's incredibly simple. To start getting better error explanations, just write <strong>import pydefine</strong> at the very top of your Python code.</p>
+                    
+                    <div style="background:#f8fafc; border:1px dashed var(--python-blue); padding:20px; border-radius:12px; font-family:'JetBrains Mono',monospace; font-size:14px;">
+                        <span style="color:var(--python-blue); font-weight:700;">import</span> pydefine <span style="color:var(--muted);"># Add this at the start</span><br>
+                        <br>
+                        <span style="color:var(--muted);"># Your python practice code goes here...</span><br>
+                        print(<span style="color:var(--python-yellow-dark);">"Hello Python!"</span>)
+                    </div>
+                </div>
+            </div>
+        </section>
         <section class="section" id="stats">
             <div class="container">
                 <div class="stats-card">

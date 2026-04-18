@@ -48,11 +48,12 @@
         .nav a { margin-left: 20px; font-weight: 600; font-size: 14px; text-decoration: none; color: var(--muted); transition: 0.2s; }
         .nav a:hover { color: var(--python-blue); }
 
-        .mobile-toggle { display: none; background: none; border: none; padding: 10px; cursor: pointer; color: var(--text); z-index: 101; }
-        .mobile-menu { position: fixed; top: 0; right: -100%; width: 280px; height: 100vh; background: #fff; box-shadow: var(--shadow-lg); transition: 0.4s cubic-bezier(0.2, 1, 0.3, 1); z-index: 99; padding: 80px 24px 24px; display: flex; flex-direction: column; gap: 8px; }
+        .mobile-toggle { display: none; background: none; border: none; padding: 10px; cursor: pointer; color: var(--text); z-index: 110; position: relative; }
+        .mobile-menu { position: fixed; top: 0; right: -100%; width: 100%; height: 100vh; background: #fff; box-shadow: var(--shadow-lg); transition: 0.4s cubic-bezier(0.2, 1, 0.3, 1); z-index: 105; padding: 120px 24px 24px; display: flex; flex-direction: column; gap: 12px; }
         .mobile-menu.active { right: 0; }
-        .mobile-menu a { display: block; padding: 16px; font-weight: 800; color: var(--text); border-bottom: 1px solid var(--line); text-decoration: none; border-radius: 12px; }
+        .mobile-menu a { display: block; padding: 20px; font-weight: 800; color: var(--text); border-bottom: 1px solid var(--line); text-decoration: none; border-radius: 12px; font-size: 18px; }
         .mobile-menu a:hover { background: var(--surface); color: var(--python-blue); }
+        .close-menu { position: absolute; top: 20px; right: 24px; font-size: 32px; font-weight: 800; color: var(--text); cursor: pointer; }
 
         .card { background: #fff; border: 1px solid var(--line); border-radius: 20px; padding: clamp(20px, 4vw, 40px); box-shadow: var(--shadow-lg); transition: transform 0.3s; }
         .grid-docs { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
@@ -102,6 +103,7 @@
 </header>
 
 <div class="mobile-menu" id="mobileMenu">
+    <div class="close-menu" id="closeMenu">&times;</div>
     <a href="#about">About Project</a>
     <a href="#install">Install in CMD</a>
     <a href="#features">Core Features</a>
@@ -266,14 +268,26 @@
 <script>
     const menuToggle = document.getElementById('menuToggle');
     const mobileMenu = document.getElementById('mobileMenu');
+    const closeMenu = document.getElementById('closeMenu');
     
     menuToggle.addEventListener('click', (e) => {
         e.stopPropagation();
         mobileMenu.classList.toggle('active');
     });
 
+    closeMenu.addEventListener('click', () => {
+        mobileMenu.classList.remove('active');
+    });
+
+    // Close menu when clicking a link
+    mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+        });
+    });
+
     document.addEventListener('click', (e) => {
-        if (!mobileMenu.contains(e.target)) {
+        if (!mobileMenu.contains(e.target) && e.target !== menuToggle) {
             mobileMenu.classList.remove('active');
         }
     });

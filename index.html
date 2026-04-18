@@ -1,20 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>PyDefine — Python Library by Yahya Mundewadi</title>
-    <meta name="description"
-        content="PyDefine is a pure-Python library that converts raw Python tracebacks into beginner-friendly explanations with actionable fixes." />
-    <meta name="author" content="Md. Yahya Ab. Wahid Mundewadi" />
+    <meta name="description" content="PyDefine is a pure-Python library that converts raw Python tracebacks into beginner-friendly explanations with actionable fixes." />
+    <meta name="author" content="Yahya Mundewadi" />
     <link rel="icon" type="image/jpeg" href="pydefine.jpg" />
-
+    
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
-        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
 
     <style>
         :root {
@@ -32,553 +28,305 @@
             --nav-h: 76px;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body { font-family: "Outfit", sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; width: 100%; }
+        
+        .container { width: min(calc(100% - 32px), 1200px); margin: 0 auto; }
+        .section { padding: 80px 0; border-bottom: 1px solid var(--line); overflow: hidden; }
+        
+        .eyebrow-pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; border-radius: 999px; background: #f1f5f9; border: 1px solid var(--line); font-size: 13px; font-weight: 700; color: var(--python-blue); margin-bottom: 16px; }
+        .badge-pulse { width: 8px; height: 8px; background: var(--python-blue); border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } 100% { transform: scale(1); opacity: 1; } }
 
-        html {
-            scroll-behavior: smooth;
-        }
+        .hero-title { font-size: clamp(42px, 7vw, 84px); font-weight: 800; letter-spacing: -0.05em; line-height: 0.95; }
+        .hero-title span { color: var(--python-blue); }
+        .hero-desc { font-size: 20px; color: var(--muted); margin-top: 24px; max-width: 60ch; }
 
-        body {
-            font-family: "Outfit", sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-            overflow-x: hidden;
-            width: 100%;
-        }
+        .site-header { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); min-height: var(--nav-h); display: flex; align-items: center; padding: 10px 0; }
+        .nav a { margin-left: 24px; font-weight: 600; font-size: 14px; text-decoration: none; color: var(--muted); transition: 0.2s; }
+        .nav a:hover { color: var(--python-blue); }
 
-        .container {
-            width: min(calc(100% - 32px), 1200px);
-            margin: 0 auto;
-        }
+        .card { background: #fff; border: 1px solid var(--line); border-radius: 24px; padding: 40px; box-shadow: var(--shadow-lg); transition: transform 0.3s; }
+        .card:hover { transform: translateY(-4px); border-color: var(--python-blue); }
 
-        .section {
-            padding: 80px 0;
-            border-bottom: 1px solid var(--line);
-            overflow: hidden;
-        }
+        .grid-docs { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+        
+        .terminal { background: #0f172a; border-radius: 12px; padding: 20px; color: #f8fafc; font-family: "JetBrains Mono", monospace; font-size: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .terminal-header { display: flex; gap: 8px; margin-bottom: 15px; }
+        .t-dot { width: 10px; height: 10px; border-radius: 50%; }
+        
+        .code-block { background: #f8fafc; border: 1px solid var(--line); padding: 20px; border-radius: 12px; font-family: "JetBrains Mono", monospace; overflow-x: auto; margin-top: 15px; font-size: 14px; }
+        .kw { color: #2563eb; font-weight: 700; }
+        .str { color: #ca8a04; }
+        .com { color: #94a3b8; font-style: italic; }
 
-        .eyebrow-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 16px;
-            border-radius: 999px;
-            background: #f1f5f9;
-            border: 1px solid var(--line);
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--python-blue);
-            margin-bottom: 16px;
-        }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th { text-align: left; padding: 12px; background: #f1f5f9; font-size: 13px; font-weight: 800; }
+        td { padding: 12px; border-bottom: 1px solid var(--line); font-size: 14px; }
 
-        .badge-pulse {
-            width: 8px;
-            height: 8px;
-            background: var(--python-blue);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
+        .stats-strip { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 40px; }
+        .stat-item { flex: 1; min-width: 140px; padding: 16px; border-radius: 12px; background: var(--surface); text-align: center; border: 1px solid var(--line); }
+        .stat-val { display: block; font-size: 28px; font-weight: 800; color: var(--python-blue); }
+        .stat-lab { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--muted); }
 
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-                opacity: 1;
-            }
+        .list-group { padding-left: 20px; }
+        .list-group li { margin-bottom: 10px; color: var(--muted); }
 
-            50% {
-                transform: scale(1.5);
-                opacity: 0.5;
-            }
+        .btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 28px; border-radius: 12px; font-weight: 800; text-decoration: none; transition: 0.3s; }
+        .btn-blue { background: var(--python-blue); color: #fff; }
+        .btn-outline { border: 1px solid var(--line); background: #fff; }
+        .btn:hover { transform: scale(1.02); }
 
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        .hero-title {
-            font-size: clamp(42px, 7vw, 84px);
-            font-weight: 800;
-            letter-spacing: -0.05em;
-            line-height: 0.95;
-        }
-
-        .hero-title span {
-            color: var(--python-blue);
-        }
-
-        .hero-desc {
-            font-size: 20px;
-            color: var(--muted);
-            margin-top: 24px;
-            max-width: 60ch;
-        }
-
-        .site-header {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--line);
-            height: var(--nav-h);
-            display: flex;
-            align-items: center;
-        }
-
-        .nav a {
-            margin-left: 24px;
-            font-weight: 600;
-            font-size: 14px;
-            text-decoration: none;
-            color: var(--muted);
-            transition: 0.2s;
-        }
-
-        .nav a:hover {
-            color: var(--python-blue);
-        }
-
-        .card {
-            background: #fff;
-            border: 1px solid var(--line);
-            border-radius: 24px;
-            padding: 40px;
-            box-shadow: var(--shadow-lg);
-            transition: transform 0.3s;
-        }
-
-        .card:hover {
-            transform: translateY(-4px);
-            border-color: var(--python-blue);
-        }
-
-        .grid-docs {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 24px;
-        }
-
-        .terminal {
-            background: #0f172a;
-            border-radius: 12px;
-            padding: 20px;
-            color: #f8fafc;
-            font-family: "JetBrains Mono", monospace;
-            font-size: 14px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .terminal-header {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-
-        .t-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-        }
-
-        .code-block {
-            background: #f8fafc;
-            border: 1px solid var(--line);
-            padding: 20px;
-            border-radius: 12px;
-            font-family: "JetBrains Mono", monospace;
-            overflow-x: auto;
-            margin-top: 15px;
-            font-size: 14px;
-        }
-
-        .kw {
-            color: #2563eb;
-            font-weight: 700;
-        }
-
-        .str {
-            color: #ca8a04;
-        }
-
-        .com {
-            color: #94a3b8;
-            font-style: italic;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-
-        th {
-            text-align: left;
-            padding: 12px;
-            background: #f1f5f9;
-            font-size: 13px;
-            font-weight: 800;
-        }
-
-        td {
-            padding: 12px;
-            border-bottom: 1px solid var(--line);
-            font-size: 14px;
-        }
-
-        .stats-strip {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin-top: 40px;
-        }
-
-        .stat-item {
-            flex: 1;
-            min-width: 140px;
-            padding: 16px;
-            border-radius: 12px;
-            background: var(--surface);
-            text-align: center;
-            border: 1px solid var(--line);
-        }
-
-        .stat-val {
-            display: block;
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--python-blue);
-        }
-
-        .stat-lab {
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            color: var(--muted);
-        }
-
-        .list-group {
-            padding-left: 20px;
-        }
-
-        .list-group li {
-            margin-bottom: 10px;
-            color: var(--muted);
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 14px 28px;
-            border-radius: 12px;
-            font-weight: 800;
-            text-decoration: none;
-            transition: 0.3s;
-        }
-
-        .btn-blue {
-            background: var(--python-blue);
-            color: #fff;
-        }
-
-        .btn-outline {
-            border: 1px solid var(--line-strong);
-            background: #fff;
-        }
-
-        .btn:hover {
-            transform: scale(1.02);
-        }
-
-        @media (max-width: 768px) {
-            .grid-docs {
-                grid-template-columns: 1fr;
-            }
-
-            .hero-title {
-                font-size: 48px;
-            }
-
-            .nav {
-                display: none;
-            }
+        @media (max-width: 900px) {
+            .grid-docs { grid-template-columns: 1fr; }
+            .hero-title { font-size: 42px; }
+            .nav { display: none; }
+            .section .container { display: flex !important; flex-direction: column !important; }
         }
     </style>
 </head>
-
 <body>
 
-    <header class="site-header">
-        <div class="container" style="display:flex; justify-content:space-between; align-items:center;">
-            <div style="display:flex; align-items:center; gap:12px;">
+<header class="site-header">
+    <div class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+            <div style="display:flex; align-items:center; gap:8px;">
                 <img src="pydefine.jpg" style="width:36px; height:36px; border-radius:8px;" />
-                <span style="font-weight:900; font-size:22px; letter-spacing:-0.03em;">py<span
-                        style="color:var(--python-blue);">define</span></span>
+                <span style="font-weight:900; font-size:22px; letter-spacing:-0.03em;">py<span style="color:var(--python-blue);">define</span></span>
             </div>
-            <nav class="nav">
-                <a href="#about">About</a>
-                <a href="#features">Features</a>
-                <a href="#docs">Usage</a>
-                <a href="#api">API</a>
-                <a href="#cli">CLI</a>
-                <a href="#developer">Developer</a>
-            </nav>
+            <span style="font-size:14px; color:var(--muted); font-weight:700;">— Python Library by Yahya Mundewadi — <a href="https://yahya.in" target="_blank" style="color:var(--python-blue);">yahya.in</a></span>
         </div>
-    </header>
+        <nav class="nav">
+            <a href="#about">About</a>
+            <a href="#features">Features</a>
+            <a href="#docs">Usage</a>
+            <a href="#api">API</a>
+            <a href="#cli">CLI</a>
+            <a href="#developer">Developer</a>
+        </nav>
+    </div>
+</header>
 
-    <main>
-        <!-- HERO -->
-        <section class="section">
-            <div class="container" style="display:grid; grid-template-columns: 1fr 1fr; gap:40px; align-items:center;">
+<main>
+    <!-- HERO -->
+    <section class="section">
+        <div class="container" style="display:grid; grid-template-columns: 1fr 1fr; gap:40px; align-items:center;">
+            <div>
+                <div class="eyebrow-pill"><span class="badge-pulse"></span> v1.0.2 Stable Release</div>
+                <h1 class="hero-title">Python Errors <span>Simplified</span> for Humans.</h1>
+                <p class="hero-desc">PyDefine is a 100% pure-python library that converts cryptic tracebacks into actionable, beginner-friendly explanations.</p>
+                <div class="stats-strip">
+                    <div class="stat-item"><span class="stat-val count-up" data-target="1400">0</span><span class="stat-lab">Downloads+</span></div>
+                    <div class="stat-item"><span class="stat-val">88+</span><span class="stat-lab">Exceptions</span></div>
+                    <div class="stat-item"><span class="stat-val">95%</span><span class="stat-lab">Code Coverage</span></div>
+                </div>
+                <div style="margin-top:32px; display:flex; gap:16px; flex-wrap:wrap;">
+                    <a href="#docs" class="btn btn-blue">Get Started</a>
+                    <a href="https://pypi.org/project/pydefine/" class="btn btn-outline" target="_blank">View on Official Python Page</a>
+                </div>
+            </div>
+            <div class="terminal">
+                <div class="terminal-header">
+                    <div class="t-dot" style="background:#ff5f56;"></div>
+                    <div class="t-dot" style="background:#ffbd2e;"></div>
+                    <div class="t-dot" style="background:#27c93f;"></div>
+                </div>
+                <div style="color:#60a5fa;">$ pip install pydefine</div>
+                <div style="color:#94a3b8; margin-top:8px;"># script.py</div>
+                <div style="margin-top:4px;">
+                    <span class="kw">import</span> pydefine<br>
+                    x = <span style="color:#facc15;">10</span> / <span style="color:#facc15;">0</span>
+                </div>
+                <div style="margin-top:15px; color:#f87171; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
+                    ➗ ZeroDivisionError: division by zero<br>
+                    📖 What happened: You tried to divide by zero...<br>
+                    💡 How to fix: Check divisor before dividing...
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="section" id="about" style="background:#fcfdfe;">
+        <div class="container card">
+            <h2 style="font-size:32px; font-weight:800; margin-bottom:12px;">What is PyDefine?</h2>
+            <p style="font-size:18px; color:var(--muted);">Created by <b>Yahya Mundewadi</b>, PyDefine targets students and educators. It wraps the entire Python traceback system in a layer of clear, jargon-free English to help beginners find bugs faster than ever before.</p>
+            
+            <div class="stats-strip" style="margin-top:32px;">
+                <div style="flex:1;"><b>Email:</b> yahyabuilds@gmail.com</div>
+                <div style="flex:1;"><b>License:</b> MIT</div>
+                <div style="flex:1;"><b>Python Check:</b> 3.8+ Support</div>
+                <div style="flex:1;"><b>Dependencies:</b> Zero (100% Pure)</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="section" id="features">
+        <div class="container">
+            <h2 style="font-size:36px; font-weight:800; text-align:center; margin-bottom:48px;">Advanced Features</h2>
+            <div class="grid-docs">
+                <div class="card">
+                    <h3>🛡️ Safe Code Execution</h3>
+                    <p>Use <code>safe_run()</code> to execute user-submitted code in a safe environment with automatic decoding.</p>
+                </div>
+                <div class="card">
+                    <h3>💻 Multiple Interfaces</h3>
+                    <p>Usable as a Python library, a CLI dashboard, or a structured data interactive decoder.</p>
+                </div>
+                <div class="card">
+                    <h3>🔋 Production Ready</h3>
+                    <p>Fully type-hinted, 95%+ test coverage, and documentation-first architecture.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- USAGE -->
+    <section class="section" id="docs">
+        <div class="container">
+            <div class="grid-docs">
                 <div>
-                    <div class="eyebrow-pill"><span class="badge-pulse"></span> v1.0.2 Stable Release</div>
-                    <h1 class="hero-title">Python Errors <span>Simplified</span> for Humans.</h1>
-                    <p class="hero-desc">PyDefine is a 100% pure-python library that converts cryptic tracebacks into
-                        actionable, beginner-friendly explanations with emojis and analogies.</p>
-                    <div class="stats-strip">
-                        <div class="stat-item"><span class="stat-val">1,400+</span><span
-                                class="stat-lab">Downloads</span></div>
-                        <div class="stat-item"><span class="stat-val">88+</span><span class="stat-lab">Exceptions</span>
-                        </div>
-                        <div class="stat-item"><span class="stat-val">95%</span><span class="stat-lab">Code
-                                Coverage</span></div>
+                    <h2 style="font-size:32px; font-weight:800;">Basic Usage</h2>
+                    <p>Just importing the library hooks into all <i>uncaught exceptions</i> seamlessly.</p>
+                    <div class="code-block">
+                        <span class="kw">import</span> pydefine<br><br>
+                        <span class="com"># Now all errors will be explained automatically</span><br>
+                        items = [<span class="str">'apple'</span>]<br>
+                        print(items[<span style="color:#facc15;">5</span>]) <span class="com"># Trigger IndexError</span>
                     </div>
-                    <div style="margin-top:32px; display:flex; gap:16px;">
-                        <a href="#docs" class="btn btn-blue">Get Started</a>
-                        <a href="https://github.com/mdyahhya/pydefine" class="btn btn-outline" target="_blank">View
-                            GitHub</a>
+                </div>
+                <div>
+                    <h2 style="font-size:32px; font-weight:800;">Install Options</h2>
+                    <div class="code-block">
+                        <span class="com"># Standard (Recommended)</span><br>
+                        pip install pydefine<br><br>
+                        <span class="com"># For Development</span><br>
+                        pip install -e <span class="str">".[dev]"</span>
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- API TABLE -->
+    <section class="section" id="api">
+        <div class="container">
+            <h2 style="font-size:32px; font-weight:800; margin-bottom:24px;">API Reference</h2>
+            <div class="card" style="padding:0; overflow:hidden;">
+                <table>
+                    <thead>
+                        <tr><th>Function</th><th>Description</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>decode_traceback(text)</code></td><td>Decodes raw terminal traceback strings</td></tr>
+                        <tr><td><code>decode_exception(e)</code></td><td>Decodes an Exception object directly</td></tr>
+                        <tr><td><code>safe_run(code, file)</code></td><td>Safely executes and explains code errors</td></tr>
+                        <tr><td><code>explain(obj)</code></td><td>The quick, one-liner helper function</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- CLI -->
+    <section class="section" id="cli">
+        <div class="container">
+            <div class="grid-docs" style="align-items:center;">
+                <div>
+                    <h2 style="font-size:32px; font-weight:800;">Power of the CLI</h2>
+                    <p>The <code>pydefine</code> shell command allows you to list errors, run files, and filter exceptions by tags without writing a single line of code.</p>
+                    <ul class="list-group" style="margin-top:20px;">
+                        <li><b>Run file:</b> <code>pydefine script.py</code></li>
+                        <li><b>List all:</b> <code>pydefine --list-all</code></li>
+                        <li><b>Decode Log:</b> <code>pydefine --decode-log error.log</code></li>
+                    </ul>
                 </div>
                 <div class="terminal">
-                    <div class="terminal-header">
-                        <div class="t-dot" style="background:#ff5f56;"></div>
-                        <div class="t-dot" style="background:#ffbd2e;"></div>
-                        <div class="t-dot" style="background:#27c93f;"></div>
-                    </div>
-                    <div style="color:#60a5fa;">$ pip install pydefine</div>
-                    <div style="color:#94a3b8; margin-top:8px;"># script.py</div>
-                    <div style="margin-top:4px;">
-                        <span class="kw">import</span> pydefine<br>
-                        x = <span style="color:#facc15;">10</span> / <span style="color:#facc15;">0</span>
-                    </div>
-                    <div
-                        style="margin-top:15px; color:#f87171; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
-                        ➗ ZeroDivisionError: division by zero<br>
-                        📖 What happened: You tried to divide by zero...<br>
-                        💡 How to fix: Check divisor before dividing...
+                    <div style="color:var(--python-yellow-dark);">$ pydefine --list --tag syntax</div>
+                    <div style="margin-top:10px; font-size:12px;">
+                        • SyntaxError: Missing parentheses, typos, etc.<br>
+                        • IndentationError: Improper spacing (mix of tabs/spaces)<br>
+                        • TabError: Mismatched tabs and space indentations
                     </div>
                 </div>
             </div>
-        </section>
-
-        <!-- ABOUT -->
-        <section class="section" id="about" style="background:#fcfdfe;">
-            <div class="container card">
-                <h2 style="font-size:32px; font-weight:800; margin-bottom:12px;">What is PyDefine?</h2>
-                <p style="font-size:18px; color:var(--muted);">Created by <b>Md. Yahya Mundewadi</b>, PyDefine targets
-                    students and educators. It wraps the entire Python traceback system in a layer of clear, jargon-free
-                    English to help beginners find bugs faster than ever before.</p>
-
-                <div class="stats-strip" style="margin-top:32px;">
-                    <div style="flex:1;"><b>Email:</b> yahyabuilds@gmail.com</div>
-                    <div style="flex:1;"><b>License:</b> MIT</div>
-                    <div style="flex:1;"><b>Python Check:</b> 3.8+ Support</div>
-                    <div style="flex:1;"><b>Dependencies:</b> Zero (100% Pure)</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- FEATURES -->
-        <section class="section" id="features">
-            <div class="container">
-                <h2 style="font-size:36px; font-weight:800; text-align:center; margin-bottom:48px;">Advanced Features
-                </h2>
-                <div class="grid-docs">
-                    <div class="card">
-                        <h3>🛡️ Safe Code Execution</h3>
-                        <p>Use <code>safe_run()</code> to execute user-submitted code in a safe environment with
-                            automatic decoding.</p>
-                    </div>
-                    <div class="card">
-                        <h3>🌏 i18n Support</h3>
-                        <p>Includes built-in support for <b>Hinglish</b> (Hindi + English) to help students in South
-                            Asia.</p>
-                    </div>
-                    <div class="card">
-                        <h3>💻 Multiple Interfaces</h3>
-                        <p>Usable as a Python library, a CLI dashboard, or a structured data interactive decoder.</p>
-                    </div>
-                    <div class="card">
-                        <h3>🔋 Production Ready</h3>
-                        <p>Fully type-hinted, 95%+ test coverage, and documentation-first architecture.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- USAGE -->
-        <section class="section" id="docs">
-            <div class="container">
-                <div class="grid-docs">
-                    <div>
-                        <h2 style="font-size:32px; font-weight:800;">Basic Usage</h2>
-                        <p>Just importing the library hooks into all <i>uncaught exceptions</i> seamlessly.</p>
-                        <div class="code-block">
-                            <span class="kw">import</span> pydefine<br><br>
-                            <span class="com"># Now all errors will be explained automatically</span><br>
-                            items = [<span class="str">'apple'</span>]<br>
-                            print(items[<span style="color:#facc15;">5</span>]) <span class="com"># Trigger
-                                IndexError</span>
-                        </div>
-                    </div>
-                    <div>
-                        <h2 style="font-size:32px; font-weight:800;">Install Options</h2>
-                        <div class="code-block">
-                            <span class="com"># Standard (Recommended)</span><br>
-                            pip install pydefine<br><br>
-                            <span class="com"># For Development</span><br>
-                            pip install -e <span class="str">".[dev]"</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- API TABLE -->
-        <section class="section" id="api">
-            <div class="container">
-                <h2 style="font-size:32px; font-weight:800; margin-bottom:24px;">API Reference</h2>
-                <div class="card" style="padding:0; overflow:hidden;">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Function</th>
-                                <th>Description</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><code>decode_traceback(text)</code></td>
-                                <td>Decodes raw terminal traceback strings</td>
-                            </tr>
-                            <tr>
-                                <td><code>decode_exception(e)</code></td>
-                                <td>Decodes an Exception object directly</td>
-                            </tr>
-                            <tr>
-                                <td><code>safe_run(code, file)</code></td>
-                                <td>Safely executes and explains code errors</td>
-                            </tr>
-                            <tr>
-                                <td><code>explain(obj)</code></td>
-                                <td>The quick, one-liner helper function</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <p style="margin-top:16px; font-size:14px; color:var(--muted);">All functions return a Dict containing:
-                    <code>error_type</code>, <code>simple_explanation</code>, <code>fix_suggestion</code>,
-                    <code>tags</code>, <code>emoji</code>, and <code>structured_output</code>.
-                </p>
-            </div>
-        </section>
-
-        <!-- CLI -->
-        <section class="section" id="cli">
-            <div class="container">
-                <div class="grid-docs" style="align-items:center;">
-                    <div>
-                        <h2 style="font-size:32px; font-weight:800;">Power of the CLI</h2>
-                        <p>The <code>pydefine</code> shell command allows you to list errors, run files, and filter
-                            exceptions by tags without writing a single line of code.</p>
-                        <ul class="list-group" style="margin-top:20px;">
-                            <li><b>Run file:</b> <code>pydefine script.py</code></li>
-                            <li><b>List all:</b> <code>pydefine --list-all</code></li>
-                            <li><b>Decode Log:</b> <code>pydefine --decode-log error.log</code></li>
-                        </ul>
-                    </div>
-                    <div class="terminal">
-                        <div style="color:var(--python-yellow-dark);">$ pydefine --list --tag syntax</div>
-                        <div style="margin-top:10px; font-size:12px;">
-                            • SyntaxError: Missing parentheses, typos, etc.<br>
-                            • IndentationError: Improper spacing (mix of tabs/spaces)<br>
-                            • TabError: Mismatched tabs and space indentations
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- EXCEPTIONS LIST -->
-        <section class="section" id="exceptions">
-            <div class="container">
-                <h2 style="font-size:32px; font-weight:800; margin-bottom:32px;">88+ Supported Exceptions</h2>
-                <div class="grid-docs">
-                    <div class="card" style="padding:24px;">
-                        <h4 style="margin-bottom:12px; color:var(--python-blue);">Common Types</h4>
-                        <p style="font-size:14px;">NameError, TypeError, ValueError, AttributeError, KeyError,
-                            IndexError, FileNotFoundError, ImportError, ModuleNotFoundError, ZeroDivisionError...</p>
-                    </div>
-                    <div class="card" style="padding:24px;">
-                        <h4 style="margin-bottom:12px; color:var(--python-blue);">Advanced Types</h4>
-                        <p style="font-size:14px;">RecursionError, MemoryError, ConnectionError, TimeoutError,
-                            UnicodeDecodeError, RuntimeError, Exception Groups (3.11+)...</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- i18n -->
-        <section class="section" id="i18n">
-            <div class="container center" style="text-align:center;">
-                <h2 style="font-size:32px; font-weight:800;">Multi-Language Support</h2>
-                <p style="margin-top:12px; color:var(--muted);">PyDefine is growing internationally. Switch to
-                    <b>Hinglish</b> for local-friendly explanations.
-                </p>
-                <div class="code-block" style="max-width:400px; margin: 24px auto;">
-                    <span class="kw">from</span> pydefine.i18n <span class="kw">import</span> set_language<br>
-                    set_language(<span class="str">'hi'</span>) <span class="com"># Switch to Hinglish</span>
-                </div>
-                <p style="font-size:13px;">Currently supporting <b>English (en)</b> and <b>Hinglish (hi)</b>.</p>
-            </div>
-        </section>
-
-        <!-- DEVELOPER -->
-        <section class="section" id="developer">
-            <div class="container">
-                <div style="display:flex; align-items:center; gap:40px; flex-wrap:wrap;">
-                    <img src="yahya.jpeg"
-                        style="width:200px; height:200px; border-radius:32px; border:1px solid var(--line); box-shadow:var(--shadow-lg);" />
-                    <div>
-                        <h2 style="font-size:42px; font-weight:800; letter-spacing:-0.05em;">Md. Yahya Mundewadi</h2>
-                        <p style="font-size:18px; color:var(--muted); margin-top:10px; max-width:50ch;">Creator of
-                            PyDefine. Passionate about improving developer education and creating tools that simplify
-                            core computing concepts.</p>
-                        <div style="margin-top:20px; display:flex; gap:20px; font-size:14px; font-weight:700;">
-                            <a href="mailto:yahyabuilds@gmail.com" style="color:var(--text);">Email</a>
-                            <a href="https://github.com/mdyahhya" target="_blank" style="color:var(--text);">GitHub</a>
-                            <a href="https://instagram.com/pydefine" target="_blank"
-                                style="color:var(--text);">Instagram</a>
-                            <a href="https://yahya.in" target="_blank" style="color:var(--python-blue);">yahya.in</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer class="footer">
-        <div class="container" style="padding:40px 0; border-top:1px solid var(--line);">
-            <p>&copy; 2026 <b>PyDefine</b> — A Documentation Project by Md. Yahya Mundewadi. pydefine.yahya.in</p>
         </div>
-    </footer>
+    </section>
+
+    <!-- EXCEPTIONS LIST -->
+    <section class="section" id="exceptions">
+        <div class="container">
+            <h2 style="font-size:32px; font-weight:800; margin-bottom:32px;">88+ Supported Exceptions</h2>
+            <div class="grid-docs">
+                <div class="card" style="padding:24px;">
+                    <h4 style="margin-bottom:12px; color:var(--python-blue);">Common Types</h4>
+                    <p style="font-size:14px;">NameError, TypeError, ValueError, AttributeError, KeyError, IndexError, FileNotFoundError, ImportError, ModuleNotFoundError, ZeroDivisionError...</p>
+                </div>
+                <div class="card" style="padding:24px;">
+                    <h4 style="margin-bottom:12px; color:var(--python-blue);">Advanced Types</h4>
+                    <p style="font-size:14px;">RecursionError, MemoryError, ConnectionError, TimeoutError, UnicodeDecodeError, RuntimeError, Exception Groups (3.11+)...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DEVELOPER -->
+    <section class="section" id="developer">
+        <div class="container">
+            <div style="display:flex; align-items:center; gap:40px; flex-wrap:wrap;">
+                <img src="yahya.jpeg" style="width:200px; height:200px; border-radius:32px; border:1px solid var(--line); box-shadow:var(--shadow-lg);" />
+                <div>
+                    <h2 style="font-size:42px; font-weight:800; letter-spacing:-0.05em;">Yahya Mundewadi</h2>
+                    <p style="font-size:18px; color:var(--muted); margin-top:10px; max-width:50ch;">Creator of PyDefine. Passionate about improving developer education and creating tools that simplify core computing concepts.</p>
+                    <div style="margin-top:20px; display:flex; gap:20px; font-size:14px; font-weight:700;">
+                        <a href="mailto:yahyabuilds@gmail.com" style="color:var(--text);">Email</a>
+                        <a href="https://github.com/mdyahhya" target="_blank" style="color:var(--text);">GitHub</a>
+                        <a href="https://instagram.com/pydefine" target="_blank" style="color:var(--text);">Instagram</a>
+                        <a href="https://yahya.in" target="_blank" style="color:var(--python-blue);">yahya.in</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="footer">
+    <div class="container" style="padding:40px 0; border-top:1px solid var(--line);">
+        <p>&copy; 2026 <b>PyDefine</b> — A Project by Yahya Mundewadi. pydefine.yahya.in</p>
+    </div>
+</footer>
+
+<script>
+    const countUp = (el) => {
+        const target = parseInt(el.getAttribute('data-target'));
+        const duration = 2000;
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            el.innerText = Math.floor(progress * target).toLocaleString();
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            } else {
+                el.innerText = target.toLocaleString();
+            }
+        };
+        window.requestAnimationFrame(step);
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                countUp(entry.target);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 1 });
+
+    document.querySelectorAll('.count-up').forEach(el => observer.observe(el));
+</script>
 
 </body>
-
 </html>

@@ -1,1 +1,2240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  />
+  <title>PyDefine — Python Library by Yahya Mundewadi</title>
+  <meta
+    name="description"
+    content="PyDefine is a Python library by Yahya Mundewadi that converts Python errors into beginner-friendly explanations with actionable fixes."
+  />
+  <meta
+    name="keywords"
+    content="pydefine, python library, python errors, beginner friendly python, PyPI, Yahya Mundewadi"
+  />
+  <meta name="author" content="Yahya Mundewadi" />
+  <meta property="og:title" content="pydefine — Beginner Friendly Python Error Explanations" />
+  <meta
+    property="og:description"
+    content="Understand Python errors in simple language with pydefine."
+  />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="pydefine.jpg" />
+  <link rel="icon" type="image/jpeg" href="pydefine.jpg" />
+  <link rel="shortcut icon" type="image/jpeg" href="pydefine.jpg" />
+  <link rel="apple-touch-icon" href="pydefine.jpg" />
 
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --bg: #ffffff;
+      --surface: #f8f9fc;
+      --surface-2: #f2f5fa;
+      --text: #0e1116;
+      --muted: #4f5b6b;
+      --line: rgba(0, 0, 0, 0.08);
+      --line-strong: rgba(0, 0, 0, 0.14);
+
+      --python-blue: #3776ab;
+      --python-blue-dark: #245b8d;
+      --python-blue-soft: #e8f1fb;
+
+      --python-yellow: #ffd343;
+      --python-yellow-dark: #d8aa18;
+      --python-yellow-soft: #fff7d6;
+
+      --ok: #0f9d58;
+      --danger: #e24a3b;
+
+      --shadow-sm: 0 8px 24px rgba(13, 20, 33, 0.06);
+      --shadow-md: 0 20px 60px rgba(13, 20, 33, 0.10);
+      --shadow-lg: 0 28px 80px rgba(13, 20, 33, 0.14);
+
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --radius-xl: 32px;
+      --radius-pill: 999px;
+
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --space-10: 40px;
+      --space-12: 48px;
+      --space-14: 56px;
+      --space-16: 64px;
+      --space-20: 80px;
+      --space-24: 96px;
+      --space-28: 112px;
+
+      --text-xs: clamp(12px, 0.74rem, 13px);
+      --text-sm: clamp(14px, 0.9rem, 16px);
+      --text-base: clamp(16px, 1rem, 18px);
+      --text-lg: clamp(18px, 1.1rem, 24px);
+      --text-xl: clamp(24px, 2vw, 36px);
+      --text-2xl: clamp(34px, 5vw, 64px);
+      --text-hero: clamp(42px, 7vw, 96px);
+
+      --max: 1200px;
+      --nav-h: 76px;
+
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "Outfit", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      font-size: var(--text-base);
+      overflow-x: hidden;
+    }
+
+    img,
+    svg,
+    video,
+    canvas {
+      display: block;
+      max-width: 100%;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font: inherit;
+      border: 0;
+      background: none;
+      cursor: pointer;
+    }
+
+    .container {
+      width: min(calc(100% - 32px), var(--max));
+      margin-inline: auto;
+    }
+
+    .section {
+      position: relative;
+      padding: clamp(64px, 10vw, 120px) 0;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, #ffffff, #f7f9fd);
+      color: var(--python-blue-dark);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .eyebrow .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, var(--python-yellow), var(--python-blue));
+      animation: pulseDot 2.4s infinite;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.5);
+        opacity: 0.65;
+      }
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: clamp(28px, 4vw, 72px);
+      align-items: center;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 24px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .section-title {
+      font-size: var(--text-2xl);
+      line-height: 1.02;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      max-width: 14ch;
+    }
+
+    .section-title .blue {
+      color: var(--python-blue);
+    }
+
+    .section-title .yellow {
+      color: #bb8a00;
+      background: linear-gradient(180deg, #f3c51f, #b68a08);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .section-copy {
+      margin-top: 18px;
+      max-width: 64ch;
+      color: var(--muted);
+      font-size: var(--text-base);
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 28px;
+    }
+
+    .btn {
+      min-height: 48px;
+      padding: 14px 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      border-radius: 14px;
+      font-size: var(--text-sm);
+      font-weight: 700;
+      transition: transform 0.28s var(--ease), box-shadow 0.28s var(--ease), background 0.28s var(--ease), border-color 0.28s var(--ease);
+      will-change: transform;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--python-blue), #2e5f8a);
+      color: #fff;
+      box-shadow: 0 16px 34px rgba(55, 118, 171, 0.22);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(180deg, #fff8da, #fff0b2);
+      color: #2a2a2a;
+      border: 1px solid rgba(216, 170, 24, 0.26);
+      box-shadow: 0 16px 34px rgba(255, 211, 67, 0.16);
+    }
+
+    .btn-ghost {
+      border: 1px solid var(--line-strong);
+      background: #fff;
+      color: var(--text);
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .header-wrap {
+      min-height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #fff;
+      box-shadow: var(--shadow-sm);
+      flex: 0 0 auto;
+    }
+
+    .brand-mark img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .brand-text {
+      min-width: 0;
+    }
+
+    .brand-name {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-name span:first-child {
+      color: var(--python-blue);
+    }
+
+    .brand-name span:last-child {
+      color: #bb8a00;
+    }
+
+    .brand-sub {
+      font-size: 13px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav a {
+      font-size: 14px;
+      color: var(--muted);
+      padding: 10px 14px;
+      border-radius: 12px;
+      transition: background 0.25s var(--ease), color 0.25s var(--ease);
+    }
+
+    .nav a:hover {
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    .hero {
+      padding-top: clamp(48px, 7vw, 80px);
+      padding-bottom: clamp(60px, 7vw, 100px);
+      overflow: clip;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      opacity: 0.95;
+    }
+
+    .hero-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(10px);
+      opacity: 0.14;
+    }
+
+    .hero-orb.blue {
+      width: 420px;
+      height: 420px;
+      top: -120px;
+      right: -110px;
+      background: radial-gradient(circle at center, var(--python-blue) 0%, rgba(55, 118, 171, 0) 72%);
+      animation: floatSlow 8s ease-in-out infinite;
+    }
+
+    .hero-orb.yellow {
+      width: 320px;
+      height: 320px;
+      left: -90px;
+      top: 200px;
+      background: radial-gradient(circle at center, var(--python-yellow) 0%, rgba(255, 211, 67, 0) 72%);
+      animation: floatSlow 10s ease-in-out infinite reverse;
+    }
+
+    @keyframes floatSlow {
+      0%, 100% {
+        transform: translate3d(0, 0, 0);
+      }
+      50% {
+        transform: translate3d(0, -18px, 0);
+      }
+    }
+
+    .hero-copy {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-title {
+      margin-top: 22px;
+      font-size: var(--text-hero);
+      line-height: 0.93;
+      letter-spacing: -0.06em;
+      font-weight: 800;
+      max-width: 9ch;
+    }
+
+    .hero-title .line {
+      display: block;
+    }
+
+    .hero-title .line.blue {
+      color: var(--python-blue);
+    }
+
+    .hero-title .line.black {
+      color: var(--text);
+    }
+
+    .hero-title .line.yellow {
+      background: linear-gradient(180deg, #e6b91f, #9c7408);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-copy p {
+      margin-top: 24px;
+      max-width: 62ch;
+      color: var(--muted);
+      font-size: clamp(16px, 1.1rem, 20px);
+    }
+
+    .mini-links {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .mini-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: var(--python-blue-dark);
+      font-weight: 700;
+    }
+
+    .hero-card {
+      position: relative;
+      z-index: 2;
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(248, 250, 255, 0.96));
+      border-radius: 28px;
+      box-shadow: var(--shadow-lg);
+      padding: clamp(18px, 3vw, 28px);
+      overflow: hidden;
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto auto 0;
+      width: 100%;
+      height: 6px;
+      background: linear-gradient(90deg, var(--python-blue), var(--python-yellow), var(--python-blue));
+      background-size: 200% 100%;
+      animation: gradientFlow 5s linear infinite;
+    }
+
+    @keyframes gradientFlow {
+      0% {
+        background-position: 0% 0%;
+      }
+      100% {
+        background-position: 200% 0%;
+      }
+    }
+
+    .top-media {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .media-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 999px;
+      padding: 10px 14px;
+      box-shadow: var(--shadow-sm);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .media-thumb {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #fff;
+      flex: 0 0 auto;
+    }
+
+    .media-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .svg-logo-wrap {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #fff, #f6f9fd);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .stats-bar {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .stat {
+      padding: 16px;
+      border-radius: 18px;
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+
+    .stat .label {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+
+    .stat .value {
+      margin-top: 6px;
+      font-size: clamp(18px, 1.4rem, 26px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .stat.blue .value {
+      color: var(--python-blue);
+    }
+
+    .stat.yellow .value {
+      color: #b58306;
+    }
+
+    .stat.black .value {
+      color: var(--text);
+    }
+
+    .panel {
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, #fbfcff, #f4f7fd);
+    }
+
+    .win-dots {
+      display: inline-flex;
+      gap: 8px;
+      margin-right: 8px;
+    }
+
+    .win-dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: block;
+    }
+
+    .win-dots span:nth-child(1) {
+      background: #ff5f56;
+    }
+
+    .win-dots span:nth-child(2) {
+      background: #ffbd2e;
+    }
+
+    .win-dots span:nth-child(3) {
+      background: #27c93f;
+    }
+
+    .panel-title {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .code-stage {
+      position: relative;
+      min-height: 440px;
+      padding: 22px 18px 24px;
+      background:
+        radial-gradient(circle at top right, rgba(55, 118, 171, 0.07), transparent 30%),
+        radial-gradient(circle at bottom left, rgba(255, 211, 67, 0.12), transparent 28%),
+        #fff;
+    }
+
+    .compiler-box {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: linear-gradient(180deg, #ffffff, #f8fbff);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .compiler-top {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .compiler-label {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--python-blue-dark);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .compiler-status {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .compiler-main {
+      display: grid;
+      grid-template-columns: 88px 1fr;
+      min-height: 310px;
+    }
+
+    .person-side {
+      position: relative;
+      border-right: 1px solid var(--line);
+      background: linear-gradient(180deg, #fffef9, #fff7da);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 10px;
+    }
+
+    .person-side svg {
+      width: 56px;
+      height: auto;
+      animation: bobPerson 2.8s ease-in-out infinite;
+    }
+
+    @keyframes bobPerson {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-6px);
+      }
+    }
+
+    .editor-side {
+      position: relative;
+      background: #fff;
+      padding: 18px 18px 20px;
+      overflow: hidden;
+    }
+
+    .code-line {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-height: 34px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      white-space: pre;
+      position: relative;
+    }
+
+    .line-no {
+      width: 24px;
+      color: rgba(0, 0, 0, 0.35);
+      user-select: none;
+      flex: 0 0 auto;
+      text-align: right;
+    }
+
+    .line-text {
+      position: relative;
+      color: #1a2330;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .kw {
+      color: var(--python-blue);
+      font-weight: 700;
+    }
+
+    .var {
+      color: #252a33;
+    }
+
+    .num {
+      color: #b57905;
+      font-weight: 700;
+    }
+
+    .op {
+      color: #5d6978;
+    }
+
+    .err {
+      color: var(--danger);
+      font-weight: 700;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 9px;
+      height: 18px;
+      background: var(--python-blue);
+      margin-left: 2px;
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      50% {
+        opacity: 0;
+      }
+    }
+
+    .typing-line .typed {
+      display: inline-block;
+      overflow: hidden;
+      border-right: 0;
+      max-width: 0;
+      animation: typeImport 3.8s steps(18) infinite;
+      vertical-align: bottom;
+    }
+
+    @keyframes typeImport {
+      0% {
+        max-width: 0;
+      }
+      25% {
+        max-width: 220px;
+      }
+      60% {
+        max-width: 220px;
+      }
+      100% {
+        max-width: 220px;
+      }
+    }
+
+    .error-banner {
+      margin-top: 18px;
+      border: 1px solid rgba(226, 74, 59, 0.2);
+      background: linear-gradient(180deg, #fff6f4, #fffdfd);
+      border-radius: 18px;
+      padding: 16px;
+      display: grid;
+      gap: 8px;
+      animation: softAppear 4s infinite;
+    }
+
+    @keyframes softAppear {
+      0%, 18% {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      26%, 100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .error-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .error-icon {
+      width: 42px;
+      height: 42px;
+      flex: 0 0 auto;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #fff, #ffe6e1);
+      border: 1px solid rgba(226, 74, 59, 0.18);
+      display: grid;
+      place-items: center;
+    }
+
+    .error-body strong {
+      display: block;
+      color: var(--danger);
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .error-body p {
+      color: #4b5664;
+      font-size: 14px;
+      margin-top: 3px;
+    }
+
+    .features {
+      background: linear-gradient(180deg, #ffffff, #fcfdff);
+    }
+
+    .feature-card {
+      position: relative;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: #fff;
+      box-shadow: var(--shadow-sm);
+      min-height: 100%;
+      transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .feature-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 18px;
+      border: 1px solid var(--line);
+    }
+
+    .feature-icon.blue {
+      background: linear-gradient(180deg, #eef6ff, #dfeefe);
+    }
+
+    .feature-icon.yellow {
+      background: linear-gradient(180deg, #fff8db, #fff0bb);
+    }
+
+    .feature-icon.white {
+      background: linear-gradient(180deg, #ffffff, #f6f8fb);
+    }
+
+    .feature-card h3 {
+      font-size: 22px;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      font-weight: 800;
+    }
+
+    .feature-card p {
+      margin-top: 12px;
+      font-size: 15px;
+      color: var(--muted);
+      max-width: 34ch;
+    }
+
+    .link-panel {
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, #ffffff, #f9fbfe);
+      border-radius: 28px;
+      padding: clamp(22px, 4vw, 36px);
+      box-shadow: var(--shadow-md);
+      display: grid;
+      gap: 18px;
+    }
+
+    .link-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .tag {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .pypi-box {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pypi-box::after {
+      content: "";
+      position: absolute;
+      right: -50px;
+      bottom: -50px;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(55, 118, 171, 0.08), transparent 70%);
+      pointer-events: none;
+    }
+
+    .downloads-card {
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: var(--shadow-md);
+    }
+
+    .downloads-head {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      background: linear-gradient(180deg, #fff, #fbfcff);
+    }
+
+    .downloads-head h3 {
+      font-size: 22px;
+      letter-spacing: -0.03em;
+      font-weight: 800;
+    }
+
+    .downloads-screen {
+      position: relative;
+      padding: 18px;
+      background: linear-gradient(180deg, #fafcff, #f5f8ff);
+    }
+
+    .downloads-image-wrap {
+      position: relative;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      overflow: hidden;
+      background: #fff;
+      min-height: 280px;
+      display: grid;
+      place-items: center;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .downloads-image-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .downloads-note {
+      padding: 18px;
+      color: var(--muted);
+      font-size: 15px;
+      border-top: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 18px;
+      margin-top: 28px;
+    }
+
+    .timeline-item {
+      position: relative;
+      display: grid;
+      grid-template-columns: 54px 1fr;
+      gap: 16px;
+      align-items: start;
+      padding: 20px;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: #fff;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .timeline-badge {
+      width: 54px;
+      height: 54px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, #ffffff, #f3f7fe);
+    }
+
+    .timeline-item:nth-child(2) .timeline-badge {
+      background: linear-gradient(180deg, #fffef7, #fff4cc);
+    }
+
+    .timeline-item:nth-child(3) .timeline-badge {
+      background: linear-gradient(180deg, #fff, #f5f7fa);
+    }
+
+    .timeline-content h3 {
+      font-size: 22px;
+      line-height: 1.12;
+      letter-spacing: -0.03em;
+      font-weight: 800;
+    }
+
+    .timeline-content p {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 15px;
+      max-width: 62ch;
+    }
+
+    .code-mini {
+      margin-top: 14px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: #0f1722;
+      color: #e7eef8;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 13px;
+      overflow-x: auto;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .code-mini .cm-k {
+      color: #62a8ff;
+    }
+
+    .code-mini .cm-s {
+      color: #ffd85e;
+    }
+
+    .code-mini .cm-e {
+      color: #ff8172;
+    }
+
+    .list-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 30px;
+    }
+
+    .list-box {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: #fff;
+      padding: 22px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .list-box h3 {
+      font-size: 20px;
+      line-height: 1.12;
+      letter-spacing: -0.03em;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .list-box ul {
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+
+    .list-box li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .list-box li::before {
+      content: "";
+      width: 9px;
+      height: 9px;
+      margin-top: 8px;
+      border-radius: 50%;
+      flex: 0 0 auto;
+      background: linear-gradient(180deg, var(--python-blue), var(--python-yellow));
+    }
+
+    .developer-card {
+      position: relative;
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: clamp(22px, 4vw, 42px);
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      padding: clamp(22px, 4vw, 40px);
+      background: linear-gradient(180deg, #ffffff, #fafcff);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    .developer-card::before {
+      content: "";
+      position: absolute;
+      inset: auto -60px -60px auto;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 211, 67, 0.18), transparent 68%);
+      pointer-events: none;
+    }
+
+    .developer-image {
+      position: relative;
+      border-radius: 26px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #fff;
+      box-shadow: var(--shadow-md);
+      aspect-ratio: 4 / 5;
+    }
+
+    .developer-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .developer-body h2 {
+      font-size: clamp(32px, 4vw, 56px);
+      line-height: 0.98;
+      letter-spacing: -0.05em;
+      font-weight: 800;
+      max-width: 11ch;
+    }
+
+    .developer-body h2 .blue {
+      color: var(--python-blue);
+    }
+
+    .developer-body h2 .yellow {
+      color: #bb8a00;
+    }
+
+    .developer-body p {
+      margin-top: 18px;
+      color: var(--muted);
+      max-width: 62ch;
+    }
+
+    .socials {
+      margin-top: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .social-link {
+      min-height: 48px;
+      padding: 12px 16px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.28s var(--ease), box-shadow 0.28s var(--ease), border-color 0.28s var(--ease);
+    }
+
+    .social-link:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: rgba(55, 118, 171, 0.25);
+    }
+
+    .site-footer {
+      padding: 34px 0 48px;
+      border-top: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .footer-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .footer-row p,
+    .footer-row a {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+    }
+
+    .reveal.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .floating-python {
+      position: absolute;
+      right: 14px;
+      top: 18px;
+      width: 64px;
+      height: 64px;
+      opacity: 0.12;
+      animation: spinSlow 12s linear infinite;
+    }
+
+    @keyframes spinSlow {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .divider-svg {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -1px;
+      width: 100%;
+      height: 66px;
+      pointer-events: none;
+      opacity: 0.9;
+    }
+
+    .hero-badges {
+      margin-top: 26px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .hero-badge {
+      padding: 12px 16px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-sm);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #1d2734;
+    }
+
+    .hero-badge .tiny-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--python-blue);
+    }
+
+    .hero-badge.yellow .tiny-dot {
+      background: var(--python-yellow-dark);
+    }
+
+    .hero-badge.black .tiny-dot {
+      background: #111;
+    }
+
+    .blue-text {
+      color: var(--python-blue);
+    }
+
+    .yellow-text {
+      color: #b58306;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .mt-18 {
+      margin-top: 18px;
+    }
+
+    .mt-24 {
+      margin-top: 24px;
+    }
+
+    .mt-30 {
+      margin-top: 30px;
+    }
+
+    .mt-36 {
+      margin-top: 36px;
+    }
+
+    .mt-44 {
+      margin-top: 44px;
+    }
+
+    .center {
+      text-align: center;
+    }
+
+    .max-center {
+      margin-inline: auto;
+    }
+
+    .python-svg-inline {
+      width: 34px;
+      height: 34px;
+      flex: 0 0 auto;
+    }
+
+    .icon-20 {
+      width: 20px;
+      height: 20px;
+      flex: 0 0 auto;
+    }
+
+    .icon-22 {
+      width: 22px;
+      height: 22px;
+      flex: 0 0 auto;
+    }
+
+    .icon-24 {
+      width: 24px;
+      height: 24px;
+      flex: 0 0 auto;
+    }
+
+    .icon-28 {
+      width: 28px;
+      height: 28px;
+      flex: 0 0 auto;
+    }
+
+    .intro-topline {
+      margin-top: 16px;
+      font-size: 15px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .intro-topline a {
+      color: var(--python-blue);
+      font-weight: 800;
+    }
+
+    .thin-rule {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(55,118,171,0), rgba(55,118,171,0.24), rgba(255,211,67,0.24), rgba(255,211,67,0));
+      margin: 24px 0 0;
+    }
+
+    @media (max-width: 1100px) {
+      .grid-2,
+      .developer-card {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-title,
+      .section-title,
+      .developer-body h2 {
+        max-width: none;
+      }
+
+      .developer-image {
+        max-width: 320px;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+
+      .grid-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .list-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-bar {
+        grid-template-columns: 1fr;
+      }
+
+      .nav {
+        display: none;
+      }
+
+      .header-wrap {
+        min-height: 72px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        width: min(calc(100% - 20px), var(--max));
+      }
+
+      .section {
+        padding: 72px 0;
+      }
+
+      .hero {
+        padding-top: 28px;
+      }
+
+      .btn-row,
+      .mini-links,
+      .hero-badges,
+      .socials {
+        gap: 10px;
+      }
+
+      .btn,
+      .social-link {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .grid-4 {
+        grid-template-columns: 1fr;
+      }
+
+      .timeline-item {
+        grid-template-columns: 1fr;
+      }
+
+      .timeline-badge {
+        width: 48px;
+        height: 48px;
+      }
+
+      .compiler-main {
+        grid-template-columns: 1fr;
+      }
+
+      .person-side {
+        min-height: 92px;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+        justify-content: flex-start;
+        padding-left: 18px;
+      }
+
+      .code-stage {
+        min-height: auto;
+      }
+
+      .hero-card,
+      .link-panel,
+      .downloads-card,
+      .developer-card {
+        border-radius: 24px;
+      }
+
+      .developer-image {
+        max-width: 100%;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a
+    href="#main"
+    style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;"
+    onfocus="this.style.left='16px';this.style.top='16px';this.style.width='auto';this.style.height='auto';this.style.padding='12px 16px';this.style.background='#fff';this.style.border='1px solid rgba(0,0,0,.1)';this.style.borderRadius='12px';this.style.zIndex='9999';"
+    onblur="this.style.left='-9999px';this.style.top='auto';this.style.width='1px';this.style.height='1px';this.style.overflow='hidden';"
+  >
+    Skip to content
+  </a>
+
+  <header class="site-header">
+    <div class="container header-wrap">
+      <a class="brand" href="#home" aria-label="pydefine home">
+        <div class="brand-mark">
+          <img src="pydefine.jpg" alt="pydefine logo image" />
+        </div>
+        <div class="brand-text">
+          <div class="brand-name">
+            <span>py</span><span>define</span>
+          </div>
+          <div class="brand-sub">By Yahya Mundewadi — yahya.in</div>
+        </div>
+      </a>
+
+      <nav class="nav" aria-label="Primary">
+        <a href="#about">About</a>
+        <a href="#how">How it works</a>
+        <a href="#pypi">PyPI</a>
+        <a href="#downloads">Downloads</a>
+        <a href="#developer">Developer</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero section" id="home">
+      <div class="hero-bg" aria-hidden="true">
+        <div class="hero-orb blue"></div>
+        <div class="hero-orb yellow"></div>
+      </div>
+
+      <div class="container grid-2">
+        <div class="hero-copy reveal">
+          <div class="eyebrow">
+            <span class="dot"></span>
+            pip install pydefine
+          </div>
+
+          <div class="intro-topline">
+            By <a href="https://yahya.in" target="_blank" rel="noopener noreferrer">Yahya Mundewadi — yahya.in</a>
+          </div>
+
+          <h1 class="hero-title">
+            <span class="line blue">Understand</span>
+            <span class="line black">Python errors</span>
+            <span class="line yellow">more easily</span>
+          </h1>
+
+          <p>
+            pydefine is a Python library by Yahya Mundewadi that turns Python errors and tracebacks into simple beginner-friendly explanations with suggested fixes, and it is listed on PyPI, the official package index widely used for Python libraries [web:5][web:19].
+          </p>
+
+          <div class="mini-links">
+            <a href="https://pypi.org/project/pydefine/" target="_blank" rel="noopener noreferrer" aria-label="Open pydefine on PyPI">
+              <svg class="icon-20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M14 3h7v7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10 14L21 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M21 14v4a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              Official PyPI page
+            </a>
+            <a href="https://pepy.tech/projects/pydefine" target="_blank" rel="noopener noreferrer" aria-label="Open pydefine stats on Pepy">
+              <svg class="icon-20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M4 19V5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M8 19v-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M12 19v-9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M16 19v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M20 19V9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              Live stats on Pepy
+            </a>
+          </div>
+
+          <div class="hero-badges">
+            <div class="hero-badge">
+              <span class="tiny-dot"></span>
+              Officially hosted on PyPI
+            </div>
+            <div class="hero-badge yellow">
+              <span class="tiny-dot"></span>
+              88+ exception types supported
+            </div>
+            <div class="hero-badge black">
+              <span class="tiny-dot"></span>
+              1400+ downloads mentioned
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <a
+              class="btn btn-primary"
+              href="https://pypi.org/project/pydefine/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Open on PyPI
+            </a>
+            <a
+              class="btn btn-secondary"
+              href="https://pepy.tech/projects/pydefine"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Check live download stats
+            </a>
+          </div>
+
+          <div class="thin-rule"></div>
+        </div>
+
+        <div class="hero-card reveal">
+          <div class="floating-python" aria-hidden="true">
+            <svg viewBox="0 0 120 120" fill="none">
+              <path d="M60 10c-19 0-18 8-18 8v12h18v4H35c-13 0-25 8-25 24 0 15 13 22 25 22h10v-14c0-10 9-18 20-18h34c9 0 16-7 16-16V18c0-8-7-8-7-8H60Z" fill="#3776AB"/>
+              <circle cx="50" cy="22" r="3.6" fill="white"/>
+              <path d="M60 110c19 0 18-8 18-8V90H60v-4h25c13 0 25-8 25-24 0-15-13-22-25-22H75v14c0 10-9 18-20 18H21c-9 0-16 7-16 16v14c0 8 7 8 7 8h48Z" fill="#FFD43B"/>
+              <circle cx="70" cy="98" r="3.6" fill="#5B4B00"/>
+            </svg>
+          </div>
+
+          <div class="top-media">
+            <div class="svg-logo-wrap" aria-label="pydefine svg logo">
+              <svg width="132" height="42" viewBox="0 0 132 42" fill="none" role="img" aria-label="pydefine logo">
+                <rect x="1" y="1" width="40" height="40" rx="14" fill="white" stroke="rgba(0,0,0,.08)"/>
+                <path d="M21 7.5c-6.5 0-6.2 2.9-6.2 2.9v4.3H21V16h-8.7c-4.4 0-8.6 2.8-8.6 8.3 0 5.2 4.4 7.6 8.6 7.6h3.5V27c0-3.6 3.1-6.4 7-6.4h11.7c3.1 0 5.6-2.5 5.6-5.6v-4.7c0-2.8-2.4-2.8-2.4-2.8H21Z" fill="#3776AB"/>
+                <circle cx="17.6" cy="11.6" r="1.5" fill="white"/>
+                <path d="M21 34.5c6.5 0 6.2-2.9 6.2-2.9v-4.3H21V26h8.7c4.4 0 8.6-2.8 8.6-8.3 0-5.2-4.4-7.6-8.6-7.6h-3.5V15c0 3.6-3.1 6.4-7 6.4H7.5c-3.1 0-5.6 2.5-5.6 5.6v4.7c0 2.8 2.4 2.8 2.4 2.8H21Z" fill="#FFD43B"/>
+                <circle cx="24.5" cy="30.5" r="1.5" fill="#5B4B00"/>
+                <path d="M54 26.5V14h4.3c3.3 0 5 1.9 5 4.8 0 2.9-1.8 4.9-5 4.9h-2.1v2.8H54Zm2.2-4.8h2c1.6 0 2.8-.9 2.8-2.8 0-1.9-1.2-2.8-2.8-2.8h-2v5.6Z" fill="#111"/>
+                <path d="M65.4 26.5V17.6h2.1v1.5c.6-1 1.6-1.8 3.1-1.8 2.2 0 3.7 1.5 3.7 4.1v5.1H72V22c0-1.8-.8-2.7-2.2-2.7-1.4 0-2.3.9-2.3 2.8v4.4h-2.1Z" fill="#111"/>
+                <path d="M76.7 26.5V17.6h2.1v8.9h-2.1Zm1-10.3c-.7 0-1.2-.5-1.2-1.2s.5-1.2 1.2-1.2 1.2.5 1.2 1.2-.5 1.2-1.2 1.2Z" fill="#111"/>
+                <path d="M80.8 26.5V17.6H87v1.8H83v1.7h3.5v1.8H83v1.8h4v1.8h-6.2Z" fill="#111"/>
+                <path d="M89 26.5V14h2.2v12.5H89Z" fill="#111"/>
+                <path d="M93.4 26.5V17.6h6.2v1.8h-4v1.7h3.5v1.8h-3.5v1.8h4v1.8h-6.2Z" fill="#111"/>
+              </svg>
+            </div>
+
+            <div class="media-pill">
+              <div class="media-thumb">
+                <img src="pydefine.jpg" alt="pydefine project image" />
+              </div>
+              pydefine.jpg included
+            </div>
+          </div>
+
+          <div class="stats-bar">
+            <div class="stat blue">
+              <div class="label">Package</div>
+              <div class="value">pydefine</div>
+            </div>
+            <div class="stat yellow">
+              <div class="label">Latest version</div>
+              <div class="value">1.0.2</div>
+            </div>
+            <div class="stat black">
+              <div class="label">Hosted on</div>
+              <div class="value">PyPI</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <div class="win-dots" aria-hidden="true">
+                <span></span><span></span><span></span>
+              </div>
+              <div class="panel-title">Animated preview — how pydefine works</div>
+            </div>
+
+            <div class="code-stage">
+              <div class="compiler-box">
+                <div class="compiler-top">
+                  <div class="compiler-label">Python compiler box</div>
+                  <div class="compiler-status">Live explanation flow</div>
+                </div>
+
+                <div class="compiler-main">
+                  <div class="person-side" aria-hidden="true">
+                    <svg viewBox="0 0 90 150" fill="none">
+                      <circle cx="45" cy="25" r="18" fill="#101828"/>
+                      <path d="M24 54c5-8 14-12 21-12 9 0 17 4 22 12l8 18v52H15V72l9-18Z" fill="#3776AB"/>
+                      <path d="M29 68h33l6 13v43H22V81l7-13Z" fill="#FFD43B"/>
+                      <rect x="34" y="58" width="22" height="18" rx="8" fill="#fff3b6"/>
+                      <path d="M17 124h58" stroke="#101828" stroke-width="6" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+
+                  <div class="editor-side">
+                    <div class="code-line typing-line">
+                      <span class="line-no">1</span>
+                      <span class="line-text">
+                        <span class="typed"><span class="kw">import</span> <span class="var">pydefine</span></span><span class="cursor"></span>
+                      </span>
+                    </div>
+                    <div class="code-line">
+                      <span class="line-no">2</span>
+                      <span class="line-text"><span class="var">number</span> <span class="op">=</span> <span class="num">10</span></span>
+                    </div>
+                    <div class="code-line">
+                      <span class="line-no">3</span>
+                      <span class="line-text"><span class="var">divisor</span> <span class="op">=</span> <span class="num">0</span></span>
+                    </div>
+                    <div class="code-line">
+                      <span class="line-no">4</span>
+                      <span class="line-text"><span class="var">result</span> <span class="op">=</span> <span class="var">number</span> <span class="op">/</span> <span class="var">divisor</span></span>
+                    </div>
+                    <div class="code-line">
+                      <span class="line-no">5</span>
+                      <span class="line-text"><span class="err">ZeroDivisionError</span><span class="op">:</span> <span class="var">division by zero</span></span>
+                    </div>
+
+                    <div class="error-banner">
+                      <div class="error-row">
+                        <div class="error-icon" aria-hidden="true">
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 8v5" stroke="#E24A3B" stroke-width="2.4" stroke-linecap="round"/>
+                            <circle cx="12" cy="16.8" r="1.2" fill="#E24A3B"/>
+                            <path d="M10.3 3.8 2.8 17a2 2 0 0 0 1.74 3h15a2 2 0 0 0 1.74-3L13.7 3.8a2 2 0 0 0-3.48 0Z" stroke="#E24A3B" stroke-width="2" stroke-linejoin="round"/>
+                          </svg>
+                        </div>
+                        <div class="error-body">
+                          <strong>What happened</strong>
+                          <p>You tried to divide a number by zero, and pydefine explains the issue in simple words.</p>
+                        </div>
+                      </div>
+
+                      <div class="error-row">
+                        <div class="error-icon" aria-hidden="true">
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 3v18" stroke="#3776AB" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M7 8l5-5 5 5" stroke="#3776AB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M17 16l-5 5-5-5" stroke="#3776AB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                        </div>
+                        <div class="error-body">
+                          <strong>How to fix</strong>
+                          <p>Check whether the divisor is zero before dividing, then run the code again.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <svg class="divider-svg" viewBox="0 0 1440 120" fill="none" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 40C140 96 280 96 420 68C560 40 700 -8 840 12C980 32 1120 120 1260 112C1350 106 1410 84 1440 70V120H0V40Z" fill="#f9fbff"/>
+      </svg>
+    </section>
+
+    <section class="section features" id="about">
+      <div class="container">
+        <div class="reveal center">
+          <div class="eyebrow max-center">
+            <span class="dot"></span>
+            What pydefine does
+          </div>
+          <h2 class="section-title max-center mt-24">
+            A simple <span class="blue">Python</span> library for <span class="yellow">clear error explanations</span>
+          </h2>
+          <p class="section-copy max-center">
+            pydefine is described as a pure-Python package that converts raw Python exceptions and tracebacks into simple explanations with actionable fixes, and it supports library usage, CLI usage, safe code execution, and multiple languages including Hinglish [web:5].
+          </p>
+        </div>
+
+        <div class="grid-3 mt-44">
+          <article class="feature-card reveal">
+            <div class="feature-icon blue" aria-hidden="true">
+              <svg class="icon-28" viewBox="0 0 24 24" fill="none">
+                <path d="M8 4h10v10" stroke="#3776AB" stroke-width="2" stroke-linecap="round"/>
+                <path d="M6 20h12a2 2 0 0 0 2-2V8" stroke="#3776AB" stroke-width="2" stroke-linecap="round"/>
+                <path d="M4 6v12a2 2 0 0 0 2 2" stroke="#3776AB" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h3>Beginner-friendly explanations</h3>
+            <p>
+              The package is made to explain Python errors in very simple language so students and learners can understand what went wrong faster [web:5].
+            </p>
+          </article>
+
+          <article class="feature-card reveal">
+            <div class="feature-icon yellow" aria-hidden="true">
+              <svg class="icon-28" viewBox="0 0 24 24" fill="none">
+                <path d="M12 3v5" stroke="#B58306" stroke-width="2" stroke-linecap="round"/>
+                <path d="M6.3 6.3 9 9" stroke="#B58306" stroke-width="2" stroke-linecap="round"/>
+                <path d="M3 12h5" stroke="#B58306" stroke-width="2" stroke-linecap="round"/>
+                <path d="M14 21h-4" stroke="#B58306" stroke-width="2" stroke-linecap="round"/>
+                <path d="M8 17h8c1 0 2-.8 2-1.8v-.8a3.8 3.8 0 0 0-1.6-3.1A5 5 0 1 0 7.7 12a3.8 3.8 0 0 0-1.7 3.2v.8c0 1 .9 1.8 2 1.8Z" stroke="#B58306" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h3>Actionable fixes</h3>
+            <p>
+              The package listing says pydefine not only explains the error but also guides users with possible solutions and fix suggestions [web:5].
+            </p>
+          </article>
+
+          <article class="feature-card reveal">
+            <div class="feature-icon white" aria-hidden="true">
+              <svg class="icon-28" viewBox="0 0 24 24" fill="none">
+                <rect x="4" y="4" width="16" height="16" rx="4" stroke="#111" stroke-width="2"/>
+                <path d="M8 9h8M8 13h4" stroke="#111" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h3>Multiple usage modes</h3>
+            <p>
+              pydefine can be used by simply importing it, through advanced helper functions, or from the command line with commands such as listing errors and decoding logs [web:5].
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="how">
+      <div class="container">
+        <div class="grid-2">
+          <div class="reveal">
+            <div class="eyebrow">
+              <span class="dot"></span>
+              How it works
+            </div>
+            <h2 class="section-title mt-24">
+              Import it, run code, and let <span class="blue">pydefine</span> explain the problem
+            </h2>
+            <p class="section-copy">
+              The package description says that simply importing pydefine enables beginner-friendly handling for uncaught exceptions, and the project also exposes helper functions such as <code>decode_traceback</code>, <code>decode_exception</code>, <code>safe_run</code>, and <code>explain</code> [web:5].
+            </p>
+
+            <div class="timeline">
+              <div class="timeline-item reveal">
+                <div class="timeline-badge" aria-hidden="true">
+                  <svg class="icon-24" viewBox="0 0 24 24" fill="none">
+                    <path d="M8 6h12M8 12h12M8 18h12" stroke="#3776AB" stroke-width="2" stroke-linecap="round"/>
+                    <circle cx="5" cy="6" r="1.5" fill="#3776AB"/>
+                    <circle cx="5" cy="12" r="1.5" fill="#3776AB"/>
+                    <circle cx="5" cy="18" r="1.5" fill="#3776AB"/>
+                  </svg>
+                </div>
+                <div class="timeline-content">
+                  <h3>1. Import pydefine</h3>
+                  <p>
+                    The package shows that users can start with a simple import and then continue writing normal Python code [web:5].
+                  </p>
+                  <div class="code-mini">
+                    <span class="cm-k">import</span> pydefine
+                  </div>
+                </div>
+              </div>
+
+              <div class="timeline-item reveal">
+                <div class="timeline-badge" aria-hidden="true">
+                  <svg class="icon-24" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 7h10v10H7z" stroke="#B58306" stroke-width="2"/>
+                    <path d="M4 4h4M16 4h4M4 20h4M16 20h4" stroke="#B58306" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div class="timeline-content">
+                  <h3>2. Write your Python code</h3>
+                  <p>
+                    The example package page includes a divide-by-zero case where normal code triggers an error that pydefine then explains in easier language [web:5].
+                  </p>
+                  <div class="code-mini">
+                    number = <span class="cm-s">10</span><br />
+                    divisor = <span class="cm-s">0</span><br />
+                    result = number / divisor
+                  </div>
+                </div>
+              </div>
+
+              <div class="timeline-item reveal">
+                <div class="timeline-badge" aria-hidden="true">
+                  <svg class="icon-24" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 4l8 4v8l-8 4-8-4V8l8-4Z" stroke="#111" stroke-width="2" stroke-linejoin="round"/>
+                    <path d="M9.5 12.5 11 14l4-4" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div class="timeline-content">
+                  <h3>3. Read the explanation and fix suggestion</h3>
+                  <p>
+                    The project listing emphasizes simple explanations, fix suggestions, and structured decoding output for understanding the issue faster [web:5].
+                  </p>
+                  <div class="code-mini">
+                    <span class="cm-e">ZeroDivisionError</span>: division by zero<br />
+                    What happened: You divided by zero<br />
+                    Fix: Check the divisor before dividing
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="reveal">
+            <div class="list-grid" style="grid-template-columns:1fr;">
+              <div class="list-box">
+                <h3>Useful package highlights</h3>
+                <ul>
+                  <li>Supports 88+ Python built-in exception types [web:5]</li>
+                  <li>Designed for students, educators, and beginners [web:5]</li>
+                  <li>Includes CLI commands like listing exceptions and decoding log files [web:5]</li>
+                  <li>Provides i18n support including Hinglish according to the package description [web:5]</li>
+                </ul>
+              </div>
+
+              <div class="list-box">
+                <h3>Why this website is simple by design</h3>
+                <ul>
+                  <li>White background keeps the focus on the product and code flow.</li>
+                  <li>Black text improves readability on mobile and desktop screens.</li>
+                  <li>Python blue and yellow are used as accents for headings, highlights, and SVG design elements.</li>
+                  <li>All major sections are stacked cleanly so visitors understand the library immediately.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="pypi">
+      <div class="container">
+        <div class="grid-2">
+          <div class="reveal">
+            <div class="eyebrow">
+              <span class="dot"></span>
+              Official package listing
+            </div>
+            <h2 class="section-title mt-24">
+              Hosted on the official <span class="blue">PyPI</span> website
+            </h2>
+            <p class="section-copy">
+              pydefine is presented as a package on PyPI, and PyPI is the official third-party software repository used widely for Python packages and dependencies [web:5][web:19].
+            </p>
+          </div>
+
+          <div class="link-panel pypi-box reveal">
+            <div class="link-meta">
+              <span class="tag">Package name: pydefine</span>
+              <span class="tag">Version: 1.0.2</span>
+              <span class="tag">Author: Yahya Mundewadi</span>
+            </div>
+
+            <p class="muted">
+              If someone opens this website first, they can immediately jump to the official package page and install or explore the library from there [web:5][web:19].
+            </p>
+
+            <div class="btn-row" style="margin-top:4px;">
+              <a
+                class="btn btn-primary"
+                href="https://pypi.org/project/pydefine/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Visit https://pypi.org/project/pydefine/
+              </a>
+              <a
+                class="btn btn-ghost"
+                href="https://github.com/mdyahhya/pydefine"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Open GitHub repository
+              </a>
+            </div>
+
+            <div class="panel" style="margin-top:10px;">
+              <div class="panel-head">
+                <div class="panel-title">Install command</div>
+              </div>
+              <div class="code-stage" style="min-height:auto;padding:16px;">
+                <div class="code-mini" style="margin-top:0;">
+                  pip install pydefine
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="downloads">
+      <div class="container">
+        <div class="reveal center">
+          <div class="eyebrow max-center">
+            <span class="dot"></span>
+            Download stats section
+          </div>
+          <h2 class="section-title max-center mt-24">
+            1400+ downloads and live stats on <span class="blue">Pepy</span>
+          </h2>
+          <p class="section-copy max-center">
+            You asked to state that the library has been downloaded 1400+ times and to direct people to Pepy for live package statistics, so this section highlights that request while also linking users to the project’s live stats page [web:5].
+          </p>
+        </div>
+
+        <div class="downloads-card mt-44 reveal">
+          <div class="downloads-head">
+            <h3>Download screenshot container</h3>
+            <a
+              class="btn btn-secondary"
+              href="https://pepy.tech/projects/pydefine"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Search pydefine on Pepy
+            </a>
+          </div>
+
+          <div class="downloads-screen">
+            <div class="downloads-image-wrap">
+              <img src="pepy.jpg" alt="Screenshot showing pydefine download statistics" loading="lazy" />
+            </div>
+          </div>
+
+          <div class="downloads-note">
+            This rectangular image area uses <strong>pepy.jpg</strong> as requested, so visitors can immediately see the downloads screenshot and then open Pepy for live package stats.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="reveal center">
+          <div class="eyebrow max-center">
+            <span class="dot"></span>
+            Library summary
+          </div>
+          <h2 class="section-title max-center mt-24">
+            Clear, useful, and easy to understand
+          </h2>
+          <p class="section-copy max-center">
+            The pydefine listing describes the project as a pure-Python tool for clearer exception explanations, with zero dependencies, coverage for many exception types, and multiple interfaces for usage [web:5].
+          </p>
+        </div>
+
+        <div class="list-grid mt-44">
+          <div class="list-box reveal">
+            <h3>Package details</h3>
+            <ul>
+              <li>Latest version shown: 1.0.2 [web:5]</li>
+              <li>Pure Python package with zero dependencies in the description [web:5]</li>
+              <li>Built to help people understand Python exceptions better [web:5]</li>
+              <li>Includes usage as a library, CLI, and interactive decoder according to the listing [web:5]</li>
+            </ul>
+          </div>
+
+          <div class="list-box reveal">
+            <h3>Who it is for</h3>
+            <ul>
+              <li>Students learning Python [web:5]</li>
+              <li>Educators explaining runtime errors [web:5]</li>
+              <li>Beginners who need simpler traceback explanations [web:5]</li>
+              <li>Developers who want structured decoding helpers [web:5]</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="developer">
+      <div class="container">
+        <div class="developer-card reveal">
+          <div class="developer-image">
+            <img src="yahya.jpeg" alt="Photo of Yahya Mundewadi" loading="lazy" />
+          </div>
+
+          <div class="developer-body">
+            <div class="eyebrow">
+              <span class="dot"></span>
+              Developer information
+            </div>
+
+            <h2 class="mt-24">
+              Built by <span class="blue">Yahya</span> <span class="yellow">Mundewadi</span>
+            </h2>
+
+            <p>
+              The package page attributes pydefine to Yahya Mundewadi and links the library to the project’s GitHub presence, while this website also highlights the developer site and branding details you requested [web:5].
+            </p>
+
+            <p>
+              Main developer website: <a class="blue-text" href="https://yahya.in" target="_blank" rel="noopener noreferrer">yahya.in</a><br />
+              Google-style site name requested: <span class="yellow-text">pydefine.yahya.in</span>
+            </p>
+
+            <div class="socials">
+              <a
+                class="social-link"
+                href="https://github.com/mdyahhya/pydefine"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open GitHub"
+              >
+                <svg class="icon-22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M12 2C6.48 2 2 6.58 2 12.22c0 4.52 2.87 8.36 6.84 9.72.5.09.68-.22.68-.49 0-.24-.01-1.03-.01-1.88-2.78.62-3.37-1.21-3.37-1.21-.46-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.63.07-.63 1 .08 1.53 1.05 1.53 1.05.9 1.56 2.35 1.11 2.92.85.09-.67.35-1.11.63-1.36-2.22-.26-4.56-1.14-4.56-5.09 0-1.13.39-2.05 1.03-2.77-.1-.26-.45-1.31.1-2.74 0 0 .84-.28 2.75 1.06A9.3 9.3 0 0 1 12 6.84a9.3 9.3 0 0 1 2.5.35c1.91-1.34 2.75-1.06 2.75-1.06.55 1.43.2 2.48.1 2.74.64.72 1.03 1.64 1.03 2.77 0 3.96-2.35 4.82-4.58 5.08.36.32.69.94.69 1.9 0 1.37-.01 2.47-.01 2.8 0 .27.18.59.69.49A10.25 10.25 0 0 0 22 12.22C22 6.58 17.52 2 12 2Z" fill="currentColor"/>
+                </svg>
+                GitHub
+              </a>
+
+              <a
+                class="social-link"
+                href="https://instagram.com/pydefine"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open Instagram"
+              >
+                <svg class="icon-22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="2"/>
+                  <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/>
+                  <circle cx="17.3" cy="6.7" r="1.2" fill="currentColor"/>
+                </svg>
+                Instagram
+              </a>
+
+              <a
+                class="social-link"
+                href="https://yahya.in"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open developer website"
+              >
+                <svg class="icon-22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+                  <path d="M3 12h18" stroke="currentColor" stroke-width="2"/>
+                  <path d="M12 3c2.5 2.5 4 5.7 4 9s-1.5 6.5-4 9c-2.5-2.5-4-5.7-4-9s1.5-6.5 4-9Z" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                yahya.in
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-row">
+      <p>pydefine introductory website — By Yahya Mundewadi — yahya.in</p>
+      <p>
+        <a href="https://pypi.org/project/pydefine/" target="_blank" rel="noopener noreferrer">PyPI</a>
+        ·
+        <a href="https://pepy.tech/projects/pydefine" target="_blank" rel="noopener noreferrer">Pepy</a>
+        ·
+        <a href="https://github.com/mdyahhya/pydefine" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("in-view");
+            }
+          });
+        },
+        {
+          threshold: 0.12,
+        }
+      );
+
+      document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+
+      const navLinks = document.querySelectorAll('.nav a[href^="#"]');
+      navLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+          navLinks.forEach((n) => n.classList.remove("active"));
+          link.classList.add("active");
+        });
+      });
+
+      const cursor = document.querySelector(".cursor");
+      let visible = true;
+      setInterval(() => {
+        if (!cursor) return;
+        visible = !visible;
+        cursor.style.opacity = visible ? "1" : "0";
+      }, 530);
+
+      const heroTitle = document.querySelector(".hero-title");
+      if (heroTitle) {
+        window.addEventListener("mousemove", (e) => {
+          const x = (e.clientX / window.innerWidth - 0.5) * 8;
+          const y = (e.clientY / window.innerHeight - 0.5) * 8;
+          heroTitle.style.transform = "translate(" + x * 0.35 + "px," + y * 0.2 + "px)";
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>PyDefine — Python Library by Yahya Mundewadi</title>
-    <meta name="description" content="PyDefine is a pure-Python library that converts raw Python tracebacks into beginner-friendly explanations with actionable fixes." />
+    <meta name="description"
+        content="PyDefine is a pure-Python library that converts raw Python tracebacks into beginner-friendly explanations with actionable fixes." />
     <meta name="author" content="Yahya Mundewadi" />
     <link rel="icon" type="image/jpeg" href="pydefine.jpg" />
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet" />
 
     <style>
         :root {
@@ -26,297 +30,584 @@
             --nav-h: 76px;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; }
-        body { font-family: "Outfit", sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; width: 100%; }
-        
-        .container { width: min(calc(100% - 32px), 1200px); margin: 0 auto; }
-        .section { padding: 60px 0; border-bottom: 1px solid var(--line); overflow: hidden; }
-        
-        .badge-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; }
-        .badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px; background: #f1f5f9; border: 1px solid var(--line); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
-        .badge.blue { color: var(--python-blue); background: #eef7ff; }
-        .badge.gold { color: var(--python-yellow-dark); background: #fffdf2; }
-        .badge.pulse .dot { width: 8px; height: 8px; background: currentColor; border-radius: 50%; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.4); } 100% { opacity: 1; transform: scale(1); } }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-        .hero-title { font-size: clamp(38px, 6vw, 84px); font-weight: 800; letter-spacing: -0.05em; line-height: 0.95; }
-        .hero-title span { color: var(--python-blue); }
-        .hero-desc { font-size: 18px; color: var(--muted); margin-top: 20px; max-width: 60ch; }
+        html {
+            scroll-behavior: smooth;
+        }
 
-        .site-header { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); min-height: var(--nav-h); display: flex; align-items: center; padding: 10px 0; }
-        .nav a { margin-left: 20px; font-weight: 600; font-size: 14px; text-decoration: none; color: var(--muted); transition: 0.2s; }
-        .nav a:hover { color: var(--python-blue); }
+        body {
+            font-family: "Outfit", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            width: 100%;
+        }
 
-        .mobile-toggle { display: none; background: none; border: none; padding: 10px; cursor: pointer; color: var(--text); z-index: 110; position: relative; }
-        .mobile-menu { position: fixed; top: 0; right: -100%; width: 100%; height: 100vh; background: #fff; box-shadow: var(--shadow-lg); transition: 0.4s cubic-bezier(0.2, 1, 0.3, 1); z-index: 105; padding: 120px 24px 24px; display: flex; flex-direction: column; gap: 12px; }
-        .mobile-menu.active { right: 0; }
-        .mobile-menu a { display: block; padding: 20px; font-weight: 800; color: var(--text); border-bottom: 1px solid var(--line); text-decoration: none; border-radius: 12px; font-size: 18px; }
-        .mobile-menu a:hover { background: var(--surface); color: var(--python-blue); }
-        .close-menu { position: absolute; top: 20px; right: 24px; font-size: 32px; font-weight: 800; color: var(--text); cursor: pointer; }
+        .container {
+            width: min(calc(100% - 32px), 1200px);
+            margin: 0 auto;
+        }
 
-        .card { background: #fff; border: 1px solid var(--line); border-radius: 20px; padding: clamp(20px, 4vw, 40px); box-shadow: var(--shadow-lg); transition: transform 0.3s; }
-        .grid-docs { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
-        .terminal { background: #0f172a; border-radius: 12px; padding: 20px; color: #f8fafc; font-family: "JetBrains Mono", monospace; font-size: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); width: 100%; max-width: 600px; }
-        .code-block { background: #f8fafc; border: 1px solid var(--line); padding: 20px; border-radius: 12px; font-family: "JetBrains Mono", monospace; overflow-x: auto; margin-top: 15px; font-size: 14px; border: 1px dashed var(--python-blue); }
+        .section {
+            padding: 60px 0;
+            border-bottom: 1px solid var(--line);
+            overflow: hidden;
+        }
 
-        .btn { display: inline-flex; align-items: center; gap: 10px; padding: 12px 24px; border-radius: 10px; font-weight: 800; text-decoration: none; transition: 0.3s; font-size: 14px; }
-        .btn-blue { background: var(--python-blue); color: #fff; }
-        .btn-outline { border: 1px solid var(--line); background: #fff; }
+        .badge-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
 
-        .pepy-card { margin-top: 32px; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: #fff; box-shadow: var(--shadow-lg); }
-        .pepy-card img { width: 100%; height: auto; display: block; }
-        .pepy-header { padding: 16px; background: #fcfdfe; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
-        .pepy-header h3 { font-size: 16px; font-weight: 800; color: var(--python-blue); letter-spacing: -0.01em; }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            background: #f1f5f9;
+            border: 1px solid var(--line);
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--muted);
+        }
+
+        .badge.blue {
+            color: var(--python-blue);
+            background: #eef7ff;
+        }
+
+        .badge.gold {
+            color: var(--python-yellow-dark);
+            background: #fffdf2;
+        }
+
+        .badge.pulse .dot {
+            width: 8px;
+            height: 8px;
+            background: currentColor;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.4;
+                transform: scale(1.4);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .hero-title {
+            font-size: clamp(38px, 6vw, 84px);
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            line-height: 0.95;
+        }
+
+        .hero-title span {
+            color: var(--python-blue);
+        }
+
+        .hero-desc {
+            font-size: 18px;
+            color: var(--muted);
+            margin-top: 20px;
+            max-width: 60ch;
+        }
+
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--line);
+            min-height: var(--nav-h);
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+        }
+
+        .nav a {
+            margin-left: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            text-decoration: none;
+            color: var(--muted);
+            transition: 0.2s;
+        }
+
+        .nav a:hover {
+            color: var(--python-blue);
+        }
+
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            color: var(--text);
+            z-index: 110;
+            position: relative;
+        }
+
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            height: 100vh;
+            background: #fff;
+            box-shadow: var(--shadow-lg);
+            transition: 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+            z-index: 105;
+            padding: 120px 24px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .mobile-menu.active {
+            right: 0;
+        }
+
+        .mobile-menu a {
+            display: block;
+            padding: 20px;
+            font-weight: 800;
+            color: var(--text);
+            border-bottom: 1px solid var(--line);
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+
+        .mobile-menu a:hover {
+            background: var(--surface);
+            color: var(--python-blue);
+        }
+
+        .close-menu {
+            position: absolute;
+            top: 20px;
+            right: 24px;
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text);
+            cursor: pointer;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            padding: clamp(20px, 4vw, 40px);
+            box-shadow: var(--shadow-lg);
+            transition: transform 0.3s;
+        }
+
+        .grid-docs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .terminal {
+            background: #0f172a;
+            border-radius: 12px;
+            padding: 20px;
+            color: #f8fafc;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 14px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .code-block {
+            background: #f8fafc;
+            border: 1px solid var(--line);
+            padding: 20px;
+            border-radius: 12px;
+            font-family: "JetBrains Mono", monospace;
+            overflow-x: auto;
+            margin-top: 15px;
+            font-size: 14px;
+            border: 1px dashed var(--python-blue);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 800;
+            text-decoration: none;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+
+        .btn-blue {
+            background: var(--python-blue);
+            color: #fff;
+        }
+
+        .btn-outline {
+            border: 1px solid var(--line);
+            background: #fff;
+        }
+
+        .pepy-card {
+            margin-top: 32px;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            overflow: hidden;
+            background: #fff;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .pepy-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .pepy-header {
+            padding: 16px;
+            background: #fcfdfe;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .pepy-header h3 {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--python-blue);
+            letter-spacing: -0.01em;
+        }
 
         @media (max-width: 900px) {
-            .hero-grid { grid-template-columns: 1fr !important; }
-            .terminal { margin-top: 32px; }
-            .nav { display: none; }
-            .mobile-toggle { display: block; }
-            .hero-title { font-size: 42px; }
+            .hero-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            .terminal {
+                margin-top: 32px;
+            }
+
+            .nav {
+                display: none;
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+
+            .hero-title {
+                font-size: 42px;
+            }
         }
     </style>
 </head>
+
 <body>
 
-<header class="site-header">
-    <div class="container" style="display:flex; justify-content:space-between; align-items:center;">
-        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-            <div style="display:flex; align-items:center; gap:8px;">
-                <img src="pydefine.jpg" style="width:36px; height:36px; border-radius:8px;" />
-                <span style="font-weight:900; font-size:22px; letter-spacing:-0.03em;">py<span style="color:var(--python-blue);">define</span></span>
+    <header class="site-header">
+        <div class="container" style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <img src="pydefine.jpg" style="width:36px; height:36px; border-radius:8px;" />
+                    <span style="font-weight:900; font-size:22px; letter-spacing:-0.03em;">py<span
+                            style="color:var(--python-blue);">define</span></span>
+                </div>
+                <span style="font-size:14px; color:var(--muted); font-weight:700;">— Python Library by Yahya Mundewadi —
+                    <a href="https://yahya.in" target="_blank" style="color:var(--python-blue);">yahya.in</a></span>
             </div>
-            <span style="font-size:14px; color:var(--muted); font-weight:700;">— Python Library by Yahya Mundewadi — <a href="https://yahya.in" target="_blank" style="color:var(--python-blue);">yahya.in</a></span>
+            <nav class="nav">
+                <a href="#about">About</a>
+                <a href="#install">Install</a>
+                <a href="#features">Features</a>
+                <a href="#docs">Usage</a>
+                <a href="#developer">Developer</a>
+            </nav>
+            <button class="mobile-toggle" id="menuToggle" aria-label="Toggle Menu">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
         </div>
-        <nav class="nav">
-            <a href="#about">About</a>
-            <a href="#install">Install</a>
-            <a href="#features">Features</a>
-            <a href="#docs">Usage</a>
-            <a href="#developer">Developer</a>
-        </nav>
-        <button class="mobile-toggle" id="menuToggle" aria-label="Toggle Menu">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-        </button>
+    </header>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="close-menu" id="closeMenu">&times;</div>
+        <a href="#about">About Project</a>
+        <a href="#install">Install in CMD</a>
+        <a href="#features">Core Features</a>
+        <a href="#docs">Practice Usage</a>
+        <a href="#developer">Developer Info</a>
     </div>
-</header>
 
-<div class="mobile-menu" id="mobileMenu">
-    <div class="close-menu" id="closeMenu">&times;</div>
-    <a href="#about">About Project</a>
-    <a href="#install">Install in CMD</a>
-    <a href="#features">Core Features</a>
-    <a href="#docs">Practice Usage</a>
-    <a href="#developer">Developer Info</a>
-</div>
-
-<main>
-    <section class="section">
-        <div class="container hero-grid" style="display:grid; grid-template-columns: 1fr 1fr; gap:48px; align-items:start;">
-            <div>
-                <div class="badge-row">
-                    <div class="badge blue pulse"><span class="dot"></span> <span class="count-up" data-target="1400">0</span>+ Downloads</div>
-                    <div class="badge gold">🛡️ MIT Licensed</div>
-                    <div class="badge">🚀 Released: 24 Nov 2025</div>
-                    <div class="badge">📦 0 Dependencies (100% Pure Code)</div>
-                </div>
-                
-                <h1 class="hero-title">Python Errors <span>Simplified</span> for Humans.</h1>
-                <p class="hero-desc">PyDefine translates cryptic tracebacks into actionable, beginner-friendly explanations with emojis and analogies.</p>
-                
-                <div style="margin-top:24px; display:flex; gap:12px; flex-wrap:wrap;">
-                    <a href="#install" class="btn btn-blue">Get Started Now</a>
-                    <a href="https://pypi.org/project/pydefine/" class="btn btn-outline" target="_blank">Official Python Page</a>
-                </div>
-            </div>
-
-            <div>
-                <div class="terminal">
-                    <div style="display:flex; gap:8px; margin-bottom:15px;">
-                        <div class="t-dot" style="background:#ff5f56;"></div><div class="t-dot" style="background:#ffbd2e;"></div><div class="t-dot" style="background:#27c93f;"></div>
-                    </div>
-                    <div style="color:#60a5fa;">$ pip install pydefine</div>
-                    <div style="color:#94a3b8; margin-top:8px;"># script.py</div>
-                    <div style="margin-top:4px; font-weight:500;">
-                        <span style="color:#2563eb;">import</span> pydefine<br>
-                        x = <span style="color:#facc15;">10</span> / <span style="color:#facc15;">0</span>
-                    </div>
-                    <div style="margin-top:15px; color:#f87171; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px; font-size:13px;">
-                        ➗ ZeroDivisionError: division by zero<br>
-                        📖 What happened: You tried to divide by zero...<br>
-                        💡 How to fix: Check divisor before dividing...
-                    </div>
-                </div>
-
-                <!-- ANALYTICS SECTION -->
-                <div class="pepy-card">
-                    <div class="pepy-header">
-                        <h3>1400 downloads - analytics by pepy.tech</h3>
-                        <div style="font-size:11px; font-weight:800; color:var(--muted);">LIVE GROWTH</div>
-                    </div>
-                    <img src="pepy.jpg" alt="pydefine download statistics from pepy.tech" />
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="section" id="about" style="background:#fcfdfe;">
-        <div class="container card">
-            <h2 style="font-size:32px; font-weight:800; margin-bottom:12px;">What is PyDefine?</h2>
-            <p style="font-size:18px; color:var(--muted);">Created by <b>Yahya Mundewadi</b>, PyDefine targets students and educators. It wraps the entire Python traceback system in a layer of clear, jargon-free English.</p>
-            <div style="margin-top:32px; display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:20px; font-size:15px; font-weight:700;">
-                <div><b>Email:</b> yahyabuilds@gmail.com</div>
-                <div><b>License:</b> MIT</div>
-                <div><b>Architecture:</b> 100% Pure | Zero-Dependency</div>
-            </div>
-        </div>
-    </section>
-
-    <section class="section" id="install">
-        <div class="container">
-            <h2 style="font-size:32px; font-weight:800; margin-bottom:16px;">Install in your CMD</h2>
-            <p style="color:var(--muted); margin-bottom:24px;">To start using the library, run the following command in your terminal or Command Prompt.</p>
-            <div class="code-block" style="background:#0f172a; color:#f8fafc; border:none; padding:24px; font-size:18px;">
-                <span style="color:#60a5fa;">pip</span> install pydefine
-            </div>
-        </div>
-    </section>
-
-    <section class="section" id="features">
-        <div class="container">
-            <h2 style="font-size:36px; font-weight:800; text-align:center; margin-bottom:48px;">Core Features</h2>
-            <div class="grid-docs">
-                <div class="card">
-                    <h3>🏆 88+ Exception Types</h3>
-                    <p>Comprehensive support for all Python built-in exceptions including SyntaxError, NameError, and math errors.</p>
-                </div>
-                <div class="card">
-                    <h3>📖 Beginner Friendly</h3>
-                    <p>No technical jargon. Uses simple English, analogies, and emojis to explain what went wrong and where.</p>
-                </div>
-                <div class="card">
-                    <h3>💡 Actionable Fixes</h3>
-                    <p>Every error comes with a clear solution so you can fix your code and keep learning without getting stuck.</p>
-                </div>
-                <div class="card">
-                    <h3>🛡️ Safe Code Execution</h3>
-                    <p>Built-in <code>safe_run()</code> allows you to test code snippets with automatic, real-time error decoding.</p>
-                </div>
-                <div class="card">
-                    <h3>💻 Multiple Interfaces</h3>
-                    <p>Use it as a standard library, a powerful CLI tool, or an interactive data decoder for your own apps.</p>
-                </div>
-                <div class="card">
-                    <h3>🔋 Production Ready</h3>
-                    <p>Fully tested, type-hinted, and documented. 100% pure Python with zero external dependencies.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="section" id="docs">
-        <div class="container">
-            <h2 style="font-size:32px; font-weight:800; margin-bottom:24px;">Use in your practice programs</h2>
-            <div class="grid-docs">
+    <main>
+        <section class="section">
+            <div class="container hero-grid"
+                style="display:grid; grid-template-columns: 1fr 1fr; gap:48px; align-items:start;">
                 <div>
-                    <h4 style="margin-bottom:12px;">Automatic Mode</h4>
-                    <p style="font-size:15px; color:var(--muted); margin-bottom:12px;">Just add this at the top of your script. Any errors will be automatically decoded.</p>
-                    <div class="code-block">
-                        <span style="color:#2563eb;">import</span> pydefine<br><br>
-                        items = [<span style="color:#ca8a04;">'apple'</span>]<br>
-                        print(items[<span style="color:#facc15;">5</span>]) <span style="color:#94a3b8; font-style:italic;"># Auto-explained!</span>
+                    <div class="badge-row">
+                        <div class="badge blue pulse"><span class="dot"></span> <span class="count-up"
+                                data-target="1400">0</span>+ Downloads</div>
+                        <div class="badge gold">🛡️ MIT Licensed</div>
+                        <div class="badge">🚀 Released: 24 Nov 2025</div>
+                        <div class="badge">📦 0 Dependencies (100% Pure Code)</div>
+                    </div>
+
+                    <h1 class="hero-title">Python Errors <span>Simplified</span> for Humans.</h1>
+                    <p class="hero-desc">PyDefine turns confusing Python error messages (tracebacks) into simple
+                        explanations that beginners can understand, using emojis and easy examples.</p>
+
+                    <div style="margin-top:24px; display:flex; gap:12px; flex-wrap:wrap;">
+                        <a href="#install" class="btn btn-blue">Get Started Now</a>
+                        <a href="https://pypi.org/project/pydefine/" class="btn btn-outline" target="_blank">Official
+                            Python Page</a>
                     </div>
                 </div>
+
                 <div>
-                    <h4 style="margin-bottom:12px;">Manual Function</h4>
-                    <p style="font-size:15px; color:var(--muted); margin-bottom:12px;">Use helper functions to decode specific tracebacks or exception objects manually.</p>
-                    <div class="code-block">
-                        <span style="color:#2563eb;">from</span> pydefine <span style="color:#2563eb;">import</span> explain<br><br>
-                        <span style="color:#94a3b8; font-style:italic;"># Pass any error here</span><br>
-                        explain(some_exception_object)
+                    <div class="terminal">
+                        <div style="display:flex; gap:8px; margin-bottom:15px;">
+                            <div class="t-dot" style="background:#ff5f56;"></div>
+                            <div class="t-dot" style="background:#ffbd2e;"></div>
+                            <div class="t-dot" style="background:#27c93f;"></div>
+                        </div>
+                        <div style="color:#60a5fa;">$ pip install pydefine</div>
+                        <div style="color:#94a3b8; margin-top:8px;"># script.py</div>
+                        <div style="margin-top:4px; font-weight:500;">
+                            <span style="color:#2563eb;">import</span> pydefine<br>
+                            x = <span style="color:#facc15;">10</span> / <span style="color:#facc15;">0</span>
+                        </div>
+                        <div
+                            style="margin-top:15px; color:#f87171; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px; font-size:13px;">
+                            ➗ ZeroDivisionError: division by zero<br>
+                            📖 What happened: You tried to divide by zero...<br>
+                            💡 How to fix: Check divisor before dividing...
+                        </div>
+                    </div>
+
+                    <!-- ANALYTICS SECTION -->
+                    <div class="pepy-card">
+                        <div class="pepy-header">
+                            <h3>1400 downloads - analytics by pepy.tech</h3>
+                            <div style="font-size:11px; font-weight:800; color:var(--muted);">LIVE GROWTH</div>
+                        </div>
+                        <img src="pepy.jpg" alt="pydefine download statistics from pepy.tech" />
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section class="section" id="developer">
-        <div class="container">
-            <div style="display:flex; align-items:center; gap:40px; flex-wrap:wrap;">
-                <img src="yahya.jpeg" style="width:160px; height:160px; border-radius:32px; border:1px solid var(--line); box-shadow:var(--shadow-lg);" />
-                <div>
-                    <h2 style="font-size:38px; font-weight:800;">Yahya Mundewadi</h2>
-                    <p style="font-size:16px; color:var(--muted); margin-top:10px;">Creator of PyDefine. Passionate about simplifying Python for everyone.</p>
-                    <div style="margin-top:20px; display:flex; gap:20px; font-size:14px; font-weight:700;">
-                        <a href="mailto:yahyabuilds@gmail.com" style="color:var(--text);">Email</a>
-                        <a href="https://github.com/mdyahhya" target="_blank" style="color:var(--text);">GitHub</a>
-                        <a href="https://yahya.in" target="_blank" style="color:var(--python-blue);">yahya.in</a>
+        <section class="section" id="about" style="background:#fcfdfe;">
+            <div class="container card">
+                <h2 style="font-size:32px; font-weight:800; margin-bottom:12px;">What is PyDefine?</h2>
+                <p style="font-size:18px; color:var(--muted);">Created by <b>Yahya Mundewadi</b>, PyDefine targets
+                    students and educators. It wraps the entire Python traceback system in a layer of clear, jargon-free
+                    English.</p>
+                <div
+                    style="margin-top:32px; display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:20px; font-size:15px; font-weight:700;">
+                    <div><b>Email:</b> yahyabuilds@gmail.com</div>
+                    <div><b>License:</b> MIT</div>
+                    <div><b>Architecture:</b> 100% Pure | Zero-Dependency</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="install">
+            <div class="container">
+                <h2 style="font-size:32px; font-weight:800; margin-bottom:16px;">Install in your CMD</h2>
+                <p style="color:var(--muted); margin-bottom:24px;">To start using the library, run the following command
+                    in your terminal or Command Prompt.</p>
+                <div class="code-block"
+                    style="background:#0f172a; color:#f8fafc; border:none; padding:24px; font-size:18px;">
+                    <span style="color:#60a5fa;">pip</span> install pydefine
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="features">
+            <div class="container">
+                <h2 style="font-size:36px; font-weight:800; text-align:center; margin-bottom:48px;">Core Features</h2>
+                <div class="grid-docs">
+                    <div class="card">
+                        <h3>🏆 88+ Exception Types</h3>
+                        <p>Comprehensive support for all Python built-in exceptions including SyntaxError, NameError,
+                            and math errors.</p>
+                    </div>
+                    <div class="card">
+                        <h3>📖 Beginner Friendly</h3>
+                        <p>No technical jargon. Uses simple English, analogies, and emojis to explain what went wrong
+                            and where.</p>
+                    </div>
+                    <div class="card">
+                        <h3>💡 Actionable Fixes</h3>
+                        <p>Every error comes with a clear solution so you can fix your code and keep learning without
+                            getting stuck.</p>
+                    </div>
+                    <div class="card">
+                        <h3>🛡️ Safe Code Execution</h3>
+                        <p>Built-in <code>safe_run()</code> allows you to test code snippets with automatic, real-time
+                            error decoding.</p>
+                    </div>
+                    <div class="card">
+                        <h3>💻 Multiple Interfaces</h3>
+                        <p>Use it as a standard library, a powerful CLI tool, or an interactive data decoder for your
+                            own apps.</p>
+                    </div>
+                    <div class="card">
+                        <h3>🔋 Production Ready</h3>
+                        <p>Fully tested, type-hinted, and documented. 100% pure Python with zero external dependencies.
+                        </p>
                     </div>
                 </div>
             </div>
+        </section>
+
+        <section class="section" id="docs">
+            <div class="container">
+                <h2 style="font-size:32px; font-weight:800; margin-bottom:24px;">Use in your practice programs</h2>
+                <div class="grid-docs">
+                    <div>
+                        <h4 style="margin-bottom:12px;">Automatic Mode</h4>
+                        <p style="font-size:15px; color:var(--muted); margin-bottom:12px;">Just add this at the top of
+                            your script. Any errors will be automatically decoded.</p>
+                        <div class="code-block">
+                            <span style="color:#2563eb;">import</span> pydefine<br><br>
+                            items = [<span style="color:#ca8a04;">'apple'</span>]<br>
+                            print(items[<span style="color:#facc15;">5</span>]) <span
+                                style="color:#94a3b8; font-style:italic;"># Auto-explained!</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom:12px;">Manual Function</h4>
+                        <p style="font-size:15px; color:var(--muted); margin-bottom:12px;">Use helper functions to
+                            decode specific tracebacks or exception objects manually.</p>
+                        <div class="code-block">
+                            <span style="color:#2563eb;">from</span> pydefine <span style="color:#2563eb;">import</span>
+                            explain<br><br>
+                            <span style="color:#94a3b8; font-style:italic;"># Pass any error here</span><br>
+                            explain(some_exception_object)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="developer">
+            <div class="container">
+                <div style="display:flex; align-items:center; gap:40px; flex-wrap:wrap;">
+                    <img src="yahya.jpeg"
+                        style="width:160px; height:160px; border-radius:32px; border:1px solid var(--line); box-shadow:var(--shadow-lg);" />
+                    <div>
+                        <h2 style="font-size:38px; font-weight:800;">Yahya Mundewadi</h2>
+                        <p style="font-size:16px; color:var(--muted); margin-top:10px;">Creator of PyDefine. Passionate
+                            about simplifying Python for everyone.</p>
+                        <div style="margin-top:20px; display:flex; gap:20px; font-size:14px; font-weight:700;">
+                            <a href="mailto:yahyabuilds@gmail.com" style="color:var(--text);">Email</a>
+                            <a href="https://github.com/mdyahhya" target="_blank" style="color:var(--text);">GitHub</a>
+                            <a href="https://yahya.in" target="_blank" style="color:var(--python-blue);">yahya.in</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container"
+            style="padding:40px 0; border-top:1px solid var(--line); font-size:14px; color:var(--muted); text-align:center;">
+            <p>&copy; 2026 <b>PyDefine</b> — A Project by Yahya Mundewadi. pydefine.yahya.in</p>
         </div>
-    </section>
-</main>
+    </footer>
 
-<footer class="footer">
-    <div class="container" style="padding:40px 0; border-top:1px solid var(--line); font-size:14px; color:var(--muted); text-align:center;">
-        <p>&copy; 2026 <b>PyDefine</b> — A Project by Yahya Mundewadi. pydefine.yahya.in</p>
-    </div>
-</footer>
+    <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const closeMenu = document.getElementById('closeMenu');
 
-<script>
-    const menuToggle = document.getElementById('menuToggle');
-    const mobileMenu = document.getElementById('mobileMenu');
-    const closeMenu = document.getElementById('closeMenu');
-    
-    menuToggle.addEventListener('click', (e) => {
-        e.stopPropagation();
-        mobileMenu.classList.toggle('active');
-    });
+        menuToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            mobileMenu.classList.toggle('active');
+        });
 
-    closeMenu.addEventListener('click', () => {
-        mobileMenu.classList.remove('active');
-    });
-
-    // Close menu when clicking a link
-    mobileMenu.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', () => {
+        closeMenu.addEventListener('click', () => {
             mobileMenu.classList.remove('active');
         });
-    });
 
-    document.addEventListener('click', (e) => {
-        if (!mobileMenu.contains(e.target) && e.target !== menuToggle) {
-            mobileMenu.classList.remove('active');
-        }
-    });
+        // Close menu when clicking a link
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+            });
+        });
 
-    const countUp = (el) => {
-        const target = parseInt(el.getAttribute('data-target'));
-        const duration = 2000;
-        let startTimestamp = null;
-        const step = (timestamp) => {
-            if (!startTimestamp) startTimestamp = timestamp;
-            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-            el.innerText = Math.floor(progress * target).toLocaleString();
-            if (progress < 1) window.requestAnimationFrame(step);
-            else el.innerText = target.toLocaleString();
-        };
-        window.requestAnimationFrame(step);
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                countUp(entry.target);
-                observer.unobserve(entry.target);
+        document.addEventListener('click', (e) => {
+            if (!mobileMenu.contains(e.target) && e.target !== menuToggle) {
+                mobileMenu.classList.remove('active');
             }
         });
-    }, { threshold: 1 });
 
-    document.querySelectorAll('.count-up').forEach(el => observer.observe(el));
-</script>
+        const countUp = (el) => {
+            const target = parseInt(el.getAttribute('data-target'));
+            const duration = 2000;
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                el.innerText = Math.floor(progress * target).toLocaleString();
+                if (progress < 1) window.requestAnimationFrame(step);
+                else el.innerText = target.toLocaleString();
+            };
+            window.requestAnimationFrame(step);
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    countUp(entry.target);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 1 });
+
+        document.querySelectorAll('.count-up').forEach(el => observer.observe(el));
+    </script>
 
 </body>
+
 </html>
